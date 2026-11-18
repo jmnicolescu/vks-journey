@@ -1,0 +1,217 @@
+kubernetes_namespace_v1.assembly: Refreshing state... [id=dev-assembly-lb]
+kubernetes_service_v1.assembly: Refreshing state... [id=dev-assembly-lb/assembly-service]
+kubernetes_deployment_v1.assembly: Refreshing state... [id=dev-assembly-lb/assembly-deployment]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # kubernetes_deployment_v1.assembly will be destroyed
+  - resource "kubernetes_deployment_v1" "assembly" {
+      - id               = "dev-assembly-lb/assembly-deployment" -> null
+      - wait_for_rollout = true -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 1 -> null
+          - labels           = {
+              - "app" = "assembly-webapp"
+            } -> null
+          - name             = "assembly-deployment" -> null
+          - namespace        = "dev-assembly-lb" -> null
+          - resource_version = "572000" -> null
+          - uid              = "f50e91eb-c5e4-4605-b474-178c38bbec3d" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - spec {
+          - min_ready_seconds         = 0 -> null
+          - paused                    = false -> null
+          - progress_deadline_seconds = 600 -> null
+          - replicas                  = "3" -> null
+          - revision_history_limit    = 10 -> null
+
+          - selector {
+              - match_labels = {
+                  - "app" = "assembly-webapp"
+                } -> null
+            }
+
+          - strategy {
+              - type = "RollingUpdate" -> null
+
+              - rolling_update {
+                  - max_surge       = "25%" -> null
+                  - max_unavailable = "25%" -> null
+                }
+            }
+
+          - template {
+              - metadata {
+                  - annotations      = {} -> null
+                  - generation       = 0 -> null
+                  - labels           = {
+                      - "app" = "assembly-webapp"
+                    } -> null
+                  - name             = "assembly-webapp-pod" -> null
+                    # (4 unchanged attributes hidden)
+                }
+              - spec {
+                  - active_deadline_seconds          = 0 -> null
+                  - automount_service_account_token  = true -> null
+                  - dns_policy                       = "ClusterFirst" -> null
+                  - enable_service_links             = true -> null
+                  - host_ipc                         = false -> null
+                  - host_network                     = false -> null
+                  - host_pid                         = false -> null
+                  - node_selector                    = {} -> null
+                  - restart_policy                   = "Always" -> null
+                  - scheduler_name                   = "default-scheduler" -> null
+                  - share_process_namespace          = false -> null
+                  - termination_grace_period_seconds = 30 -> null
+                    # (6 unchanged attributes hidden)
+
+                  - container {
+                      - args                       = [] -> null
+                      - command                    = [] -> null
+                      - image                      = "jmnicolescu/assembly-webapp:latest" -> null
+                      - image_pull_policy          = "Always" -> null
+                      - name                       = "assembly-webapp" -> null
+                      - stdin                      = false -> null
+                      - stdin_once                 = false -> null
+                      - termination_message_path   = "/dev/termination-log" -> null
+                      - termination_message_policy = "File" -> null
+                      - tty                        = false -> null
+                        # (2 unchanged attributes hidden)
+
+                      - port {
+                          - container_port = 8080 -> null
+                          - host_port      = 0 -> null
+                            name           = null
+                          - protocol       = "TCP" -> null
+                            # (1 unchanged attribute hidden)
+                        }
+
+                      - resources {
+                          - limits   = {} -> null
+                          - requests = {} -> null
+                        }
+                    }
+                }
+            }
+        }
+
+      - timeouts {
+          - create = "5m" -> null
+          - update = "5m" -> null
+        }
+    }
+
+  # kubernetes_namespace_v1.assembly will be destroyed
+  - resource "kubernetes_namespace_v1" "assembly" {
+      - id                               = "dev-assembly-lb" -> null
+      - wait_for_default_service_account = false -> null
+
+      - metadata {
+          - generation       = 0 -> null
+          - labels           = {
+              - "kubernetes.io/metadata.name"        = "dev-assembly-lb"
+              - "pod-security.kubernetes.io/enforce" = "privileged"
+              - "pod-security.kubernetes.io/warn"    = "privileged"
+            } -> null
+          - name             = "dev-assembly-lb" -> null
+          - resource_version = "571910" -> null
+          - uid              = "c33779ff-a07c-40bf-a00d-9861e17949d5" -> null
+        }
+    }
+
+  # kubernetes_service_v1.assembly will be destroyed
+  - resource "kubernetes_service_v1" "assembly" {
+      - id                     = "dev-assembly-lb/assembly-service" -> null
+      - status                 = [
+          - {
+              - load_balancer = [
+                  - {
+                      - ingress = [
+                          - {
+                              - ip       = "10.55.16.10"
+                              - ip_mode  = "VIP"
+                                # (1 unchanged attribute hidden)
+                            },
+                        ]
+                    },
+                ]
+            },
+        ] -> null
+      - wait_for_load_balancer = true -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 0 -> null
+          - labels           = {
+              - "app" = "assembly-webapp"
+            } -> null
+          - name             = "assembly-service" -> null
+          - namespace        = "dev-assembly-lb" -> null
+          - resource_version = "571980" -> null
+          - uid              = "101512b9-cc62-408e-bd4d-1fb2f0be02b2" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - spec {
+          - allocate_load_balancer_node_ports = true -> null
+          - cluster_ip                        = "10.105.87.136" -> null
+          - cluster_ips                       = [
+              - "10.105.87.136",
+            ] -> null
+          - external_ips                      = [] -> null
+          - external_traffic_policy           = "Cluster" -> null
+          - health_check_node_port            = 0 -> null
+          - internal_traffic_policy           = "Cluster" -> null
+          - ip_families                       = [
+              - "IPv4",
+            ] -> null
+          - ip_family_policy                  = "SingleStack" -> null
+          - load_balancer_source_ranges       = [] -> null
+          - publish_not_ready_addresses       = false -> null
+          - selector                          = {
+              - "app" = "assembly-webapp"
+            } -> null
+          - session_affinity                  = "None" -> null
+          - type                              = "LoadBalancer" -> null
+            # (3 unchanged attributes hidden)
+
+          - port {
+                name         = null
+              - node_port    = 32342 -> null
+              - port         = 8080 -> null
+              - protocol     = "TCP" -> null
+              - target_port  = "8080" -> null
+                # (1 unchanged attribute hidden)
+            }
+        }
+
+      - timeouts {
+          - create = "5m" -> null
+        }
+    }
+
+Plan: 0 to add, 0 to change, 3 to destroy.
+
+Changes to Outputs:
+  - app_url          = "http://10.55.16.10:8080" -> null
+  - load_balancer_ip = "10.55.16.10" -> null
+kubernetes_service_v1.assembly: Destroying... [id=dev-assembly-lb/assembly-service]
+kubernetes_deployment_v1.assembly: Destroying... [id=dev-assembly-lb/assembly-deployment]
+kubernetes_deployment_v1.assembly: Destruction complete after 0s
+kubernetes_service_v1.assembly: Destruction complete after 1s
+kubernetes_namespace_v1.assembly: Destroying... [id=dev-assembly-lb]
+kubernetes_namespace_v1.assembly: Still destroying... [id=dev-assembly-lb, 00m10s elapsed]
+kubernetes_namespace_v1.assembly: Still destroying... [id=dev-assembly-lb, 00m20s elapsed]
+kubernetes_namespace_v1.assembly: Still destroying... [id=dev-assembly-lb, 00m30s elapsed]
+kubernetes_namespace_v1.assembly: Still destroying... [id=dev-assembly-lb, 00m40s elapsed]
+kubernetes_namespace_v1.assembly: Destruction complete after 42s
+
+Destroy complete! Resources: 3 destroyed.

@@ -1,0 +1,20 @@
+# certManager:
+#   pspNames:
+#     - vmware-system-privileged
+# controller:
+#   enableGatewayAPI: true
+#   enableGatewayAPIListenerSet: false
+# deploymentMode:
+#   resources:
+#     requests:
+#       cpu: 10m
+#       memory: 64Mi
+# issuers: []
+# kubernetes_distribution: ""
+# kubernetes_version: ""
+# namespace: cert-manager
+# nsLimitRange:
+#   defaultRequests:
+#     cpu: 10m
+#     memory: 64Mi
+# priorityClassName: ""

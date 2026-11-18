@@ -1,0 +1,19 @@
+apiVersion: addons.kubernetes.vmware.com/v1alpha1
+kind: AddonInstall
+metadata:
+  name: istio-dev-cluster-01
+  namespace: dev-namespace
+spec:
+  addonRef:
+    name: istio
+  addonConfigNameTemplate: dev-cluster-01-istio
+  clusters:
+    - selector:
+        matchLabels:
+          cluster.x-k8s.io/cluster-name: dev-cluster-01
+  crossNamespaceSelection: Blocked
+  releaseFilter:
+    ref:
+      name: istio.kubernetes.vmware.com.1.30.0-vmware.1-vks.1
+      namespace: vmware-system-vks-public
+  stopMatchingBehavior: Delete

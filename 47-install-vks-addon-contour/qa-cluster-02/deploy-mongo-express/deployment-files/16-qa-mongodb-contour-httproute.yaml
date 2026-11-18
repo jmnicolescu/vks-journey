@@ -1,0 +1,44 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: mongo-express-httproute
+  namespace: qa-mongodb-contour
+spec:
+  parentRefs:
+    - name: contour-gateway
+      namespace: tanzu-system-ingress
+      port: 443
+  hostnames:
+    - qa-mongo-express-contour.platformlab.vcf
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: mongo-express-service
+          port: 8081
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: mongo-express-http-redirect
+  namespace: qa-mongodb-contour
+spec:
+  parentRefs:
+    - name: contour-gateway
+      namespace: tanzu-system-ingress
+      port: 80
+  hostnames:
+    - qa-mongo-express-contour.platformlab.vcf
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            port: 443
+            statusCode: 301

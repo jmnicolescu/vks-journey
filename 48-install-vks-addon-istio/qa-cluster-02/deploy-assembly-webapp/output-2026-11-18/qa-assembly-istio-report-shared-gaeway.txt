@@ -1,0 +1,434 @@
+Application namespace: qa-assembly-istio | Cluster: qa-cluster-02 | Captured: 
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl config use-context qa-cluster-02:qa-cluster-02                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Switched to context "qa-cluster-02:qa-cluster-02".
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get namespace qa-assembly-istio --show-labels                                                                                                  |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                STATUS   AGE   LABELS
+qa-assembly-istio   Active   61s   kubernetes.io/metadata.name=qa-assembly-istio,pod-security.kubernetes.io/audit=privileged,pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/warn=privileged
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get all -n qa-assembly-istio -o wide                                                                                                           |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                                       READY   STATUS    RESTARTS   AGE   IP           NODE                                                 NOMINATED NODE   READINESS GATES
+pod/assembly-deployment-769955c7fd-fkp24   1/1     Running   0          61s   10.95.2.25   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6   <none>           <none>
+pod/assembly-deployment-769955c7fd-mpr4c   1/1     Running   0          61s   10.95.1.20   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-hgp9g   <none>           <none>
+pod/assembly-deployment-769955c7fd-mvql9   1/1     Running   0          61s   10.95.4.29   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-f97bd   <none>           <none>
+
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE   SELECTOR
+service/assembly-service   ClusterIP   10.109.196.83   <none>        8080/TCP   61s   app=assembly-webapp
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS        IMAGES                               SELECTOR
+deployment.apps/assembly-deployment   3/3     3            3           61s   assembly-webapp   jmnicolescu/assembly-webapp:latest   app=assembly-webapp
+
+NAME                                             DESIRED   CURRENT   READY   AGE   CONTAINERS        IMAGES                               SELECTOR
+replicaset.apps/assembly-deployment-769955c7fd   3         3         3       61s   assembly-webapp   jmnicolescu/assembly-webapp:latest   app=assembly-webapp,pod-template-hash=769955c7fd
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get pods -n qa-assembly-istio -o custom-columns='POD:.metadata.name,IMAGES:.spec.containers[*].image'                                          |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+POD                                    IMAGES
+assembly-deployment-769955c7fd-fkp24   jmnicolescu/assembly-webapp:latest
+assembly-deployment-769955c7fd-mpr4c   jmnicolescu/assembly-webapp:latest
+assembly-deployment-769955c7fd-mvql9   jmnicolescu/assembly-webapp:latest
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get endpointslices -n qa-assembly-istio -o wide                                                                                                |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                     ADDRESSTYPE   PORTS   ENDPOINTS                          AGE
+assembly-service-bqzh6   IPv4          8080    10.95.2.25,10.95.4.29,10.95.1.20   61s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gatewayclass                                                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME           CONTROLLER                    ACCEPTED   AGE
+istio          istio.io/gateway-controller   True       74m
+istio-remote   istio.io/unmanaged-gateway    True       74m
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gateways.gateway.networking.k8s.io -A                                                                                                      |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE       NAME            CLASS   ADDRESS        PROGRAMMED   AGE
+istio-gateway   istio-gateway   istio   10.55.16.107   True         73m
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Gateway summary: namespace, name, class, requested and assigned addresses, current conditions                                                          |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE      GATEWAY        CLASS  REQUESTED_ADDRESS  ASSIGNED_ADDRESS  ACCEPTED  PROGRAMMED
+istio-gateway  istio-gateway  istio  10.55.16.107       10.55.16.107      True      True
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Gateway listener summary: all namespaces and Gateways                                                                                                  |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE      GATEWAY        LISTENER  PROTOCOL  PORT  HOSTNAME           CERTIFICATE_SECRET                      ATTACHED_ROUTES  ACCEPTED  PROGRAMMED  RESOLVED_REFS
+istio-gateway  istio-gateway  http      HTTP      80    All                -                                       2                True      True        True
+istio-gateway  istio-gateway  https     HTTPS     443   *.platformlab.vcf  istio-gateway/platformlab-wildcard-tls  2                True      True        True
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gateways.gateway.networking.k8s.io -A -o yaml                                                                                              |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+apiVersion: v1
+items:
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: Gateway
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"gateway.networking.k8s.io/v1","kind":"Gateway","metadata":{"annotations":{},"name":"istio-gateway","namespace":"istio-gateway"},"spec":{"addresses":[{"type":"IPAddress","value":"10.55.16.107"}],"gatewayClassName":"istio","listeners":[{"allowedRoutes":{"namespaces":{"from":"All"}},"name":"http","port":80,"protocol":"HTTP"},{"allowedRoutes":{"namespaces":{"from":"All"}},"hostname":"*.platformlab.vcf","name":"https","port":443,"protocol":"HTTPS","tls":{"certificateRefs":[{"kind":"Secret","name":"platformlab-wildcard-tls"}],"mode":"Terminate"}}]}}
+    creationTimestamp: "2026-11-18T13:02:53Z"
+    generation: 1
+    name: istio-gateway
+    namespace: istio-gateway
+    resourceVersion: "867305"
+    uid: f8c5fb40-5a3a-4055-a9cf-1e276f796eb0
+  spec:
+    addresses:
+    - type: IPAddress
+      value: 10.55.16.107
+    gatewayClassName: istio
+    listeners:
+    - allowedRoutes:
+        namespaces:
+          from: All
+      name: http
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: '*.platformlab.vcf'
+      name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+        - group: ""
+          kind: Secret
+          name: platformlab-wildcard-tls
+        mode: Terminate
+  status:
+    addresses:
+    - type: IPAddress
+      value: 10.55.16.107
+    conditions:
+    - lastTransitionTime: "2026-11-18T13:02:53Z"
+      message: Resource accepted
+      observedGeneration: 1
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2026-11-18T13:03:08Z"
+      message: Resource programmed, assigned to service(s) istio-gateway-istio.istio-gateway.svc.cluster.local:443
+        and istio-gateway-istio.istio-gateway.svc.cluster.local:80
+      observedGeneration: 1
+      reason: Programmed
+      status: "True"
+      type: Programmed
+    listeners:
+    - attachedRoutes: 2
+      conditions:
+      - lastTransitionTime: "2026-11-18T13:02:53Z"
+        message: No errors found
+        observedGeneration: 1
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T13:02:53Z"
+        message: No errors found
+        observedGeneration: 1
+        reason: NoConflicts
+        status: "False"
+        type: Conflicted
+      - lastTransitionTime: "2026-11-18T13:02:53Z"
+        message: No errors found
+        observedGeneration: 1
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T13:02:53Z"
+        message: No errors found
+        observedGeneration: 1
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: http
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+    - attachedRoutes: 2
+      conditions:
+      - lastTransitionTime: "2026-11-18T13:02:53Z"
+        message: No errors found
+        observedGeneration: 1
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T13:02:53Z"
+        message: No errors found
+        observedGeneration: 1
+        reason: NoConflicts
+        status: "False"
+        type: Conflicted
+      - lastTransitionTime: "2026-11-18T13:02:53Z"
+        message: No errors found
+        observedGeneration: 1
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T13:02:53Z"
+        message: No errors found
+        observedGeneration: 1
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: https
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+kind: List
+metadata:
+  resourceVersion: ""
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Gateway configuration: listener, hostname, protocol, port, TLS mode and certificate Secrets                                                            |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+{
+  "namespace": "istio-gateway",
+  "gateway": "istio-gateway",
+  "gatewayClass": "istio",
+  "listeners": [
+    {
+      "name": "http",
+      "hostname": null,
+      "protocol": "HTTP",
+      "port": 80,
+      "tlsMode": null,
+      "certificates": []
+    },
+    {
+      "name": "https",
+      "hostname": "*.platformlab.vcf",
+      "protocol": "HTTPS",
+      "port": 443,
+      "tlsMode": "Terminate",
+      "certificates": [
+        {
+          "group": "",
+          "kind": "Secret",
+          "namespace": "istio-gateway",
+          "name": "platformlab-wildcard-tls"
+        }
+      ]
+    }
+  ]
+}
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get secret platformlab-wildcard-tls -n istio-gateway                                                                                           |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                       TYPE                DATA   AGE
+platformlab-wildcard-tls   kubernetes.io/tls   2      73m
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Public TLS certificate: istio-gateway/platformlab-wildcard-tls (tls.crt)                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+subject=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=Digital Technology, CN=*.platformlab.vcf
+issuer=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=PRIVATE CA, CN=CA.platformlab.vcf
+notBefore=Nov 17 01:42:13 2026 GMT
+notAfter=Nov 14 01:42:13 2036 GMT
+X509v3 Subject Alternative Name: 
+    DNS:*.platformlab.vcf
+sha256 Fingerprint=66:88:9C:1C:E1:66:07:A0:6A:19:CE:CF:AB:B3:8B:2E:84:67:9C:A5:EA:6B:1D:55:8E:15:89:9E:34:DF:63:D7
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get httproutes.gateway.networking.k8s.io -A                                                                                                    |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE           NAME                          HOSTNAMES                                    AGE
+qa-assembly-istio   assembly-http-redirect        ["qa-assembly-istio.platformlab.vcf"]        62s
+qa-assembly-istio   assembly-httproute            ["qa-assembly-istio.platformlab.vcf"]        62s
+qa-mongodb-istio    mongo-express-http-redirect   ["qa-mongo-express-istio.platformlab.vcf"]   22s
+qa-mongodb-istio    mongo-express-httproute       ["qa-mongo-express-istio.platformlab.vcf"]   22s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| HTTPRoute attachments: namespace, route, hostnames, parent Gateway, listener and current conditions                                                    |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE          HTTPROUTE                    HOSTNAMES                               PARENT_GATEWAY               LISTENER  ACCEPTED  RESOLVED_REFS
+qa-assembly-istio  assembly-http-redirect       qa-assembly-istio.platformlab.vcf       istio-gateway/istio-gateway  http      True      True
+qa-assembly-istio  assembly-httproute           qa-assembly-istio.platformlab.vcf       istio-gateway/istio-gateway  https     True      True
+qa-mongodb-istio   mongo-express-http-redirect  qa-mongo-express-istio.platformlab.vcf  istio-gateway/istio-gateway  http      True      True
+qa-mongodb-istio   mongo-express-httproute      qa-mongo-express-istio.platformlab.vcf  istio-gateway/istio-gateway  https     True      True
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get httproutes.gateway.networking.k8s.io -n qa-assembly-istio                                                                                  |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                     HOSTNAMES                               AGE
+assembly-http-redirect   ["qa-assembly-istio.platformlab.vcf"]   62s
+assembly-httproute       ["qa-assembly-istio.platformlab.vcf"]   62s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get httproutes.gateway.networking.k8s.io -n qa-assembly-istio -o yaml                                                                          |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+apiVersion: v1
+items:
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: HTTPRoute
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"assembly-http-redirect","namespace":"qa-assembly-istio"},"spec":{"hostnames":["qa-assembly-istio.platformlab.vcf"],"parentRefs":[{"name":"istio-gateway","namespace":"istio-gateway","sectionName":"http"}],"rules":[{"filters":[{"requestRedirect":{"scheme":"https","statusCode":301},"type":"RequestRedirect"}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+    creationTimestamp: "2026-11-18T14:15:41Z"
+    generation: 1
+    name: assembly-http-redirect
+    namespace: qa-assembly-istio
+    resourceVersion: "866901"
+    uid: a02894dd-0111-4caa-a15b-8a7816ea9c92
+  spec:
+    hostnames:
+    - qa-assembly-istio.platformlab.vcf
+    parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: istio-gateway
+      namespace: istio-gateway
+      sectionName: http
+    rules:
+    - filters:
+      - requestRedirect:
+          scheme: https
+          statusCode: 301
+        type: RequestRedirect
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+  status:
+    parents:
+    - conditions:
+      - lastTransitionTime: "2026-11-18T14:15:41Z"
+        message: Route was valid
+        observedGeneration: 1
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T14:15:41Z"
+        message: All references resolved
+        observedGeneration: 1
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      controllerName: istio.io/gateway-controller
+      parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: istio-gateway
+        namespace: istio-gateway
+        sectionName: http
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: HTTPRoute
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"assembly-httproute","namespace":"qa-assembly-istio"},"spec":{"hostnames":["qa-assembly-istio.platformlab.vcf"],"parentRefs":[{"name":"istio-gateway","namespace":"istio-gateway","sectionName":"https"}],"rules":[{"backendRefs":[{"name":"assembly-service","port":8080}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+    creationTimestamp: "2026-11-18T14:15:41Z"
+    generation: 1
+    name: assembly-httproute
+    namespace: qa-assembly-istio
+    resourceVersion: "866898"
+    uid: ee7d70c9-bcac-4714-bd3c-1334b447607d
+  spec:
+    hostnames:
+    - qa-assembly-istio.platformlab.vcf
+    parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: istio-gateway
+      namespace: istio-gateway
+      sectionName: https
+    rules:
+    - backendRefs:
+      - group: ""
+        kind: Service
+        name: assembly-service
+        port: 8080
+        weight: 1
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+  status:
+    parents:
+    - conditions:
+      - lastTransitionTime: "2026-11-18T14:15:41Z"
+        message: Route was valid
+        observedGeneration: 1
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T14:15:41Z"
+        message: All references resolved
+        observedGeneration: 1
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      controllerName: istio.io/gateway-controller
+      parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: istio-gateway
+        namespace: istio-gateway
+        sectionName: https
+kind: List
+metadata:
+  resourceVersion: ""
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get deployments,pods,services -A -l app=istiod -o wide                                                                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE      NAME                     READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                                                                                                                                                                      SELECTOR
+istio-system   deployment.apps/istiod   2/2     2            2           74m   discovery    projects.packages.broadcom.com/vsphere/supervisor/vks-standard-packages/3.7.0-20260618/vks-addons@sha256:a6ba0a1e8541f347ab40ddedd6ff08ca36f5711dc99c7923b9a975ecd7d7791e   istio=pilot,kapp.k14s.io/app=1795006948217915378
+
+NAMESPACE      NAME                          READY   STATUS    RESTARTS   AGE   IP           NODE                                                 NOMINATED NODE   READINESS GATES
+istio-system   pod/istiod-66cb8d9f5b-p8mpb   1/1     Running   0          74m   10.95.2.21   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6   <none>           <none>
+istio-system   pod/istiod-66cb8d9f5b-vfx5f   1/1     Running   0          74m   10.95.1.15   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-hgp9g   <none>           <none>
+
+NAMESPACE      NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                                 AGE   SELECTOR
+istio-system   service/istiod   ClusterIP   10.102.92.220   <none>        15010/TCP,15012/TCP,443/TCP,15014/TCP   74m   app=istiod,istio=pilot,kapp.k14s.io/app=1795006948217915378
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get deployments,pods,services -A -l gateway.networking.k8s.io/gateway-name -o wide                                                             |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE       NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS    IMAGES                                                                                                                                                                      SELECTOR
+istio-gateway   deployment.apps/istio-gateway-istio   1/1     1            1           73m   istio-proxy   projects.packages.broadcom.com/vsphere/supervisor/vks-standard-packages/3.7.0-20260618/vks-addons@sha256:674a7649c6c631112769b4470abc378c0221c6d94ebcb2f0e532c4353a91ebe5   gateway.networking.k8s.io/gateway-name=istio-gateway
+
+NAMESPACE       NAME                                       READY   STATUS    RESTARTS   AGE   IP           NODE                                                 NOMINATED NODE   READINESS GATES
+istio-gateway   pod/istio-gateway-istio-79f78bfd85-8hgfn   1/1     Running   0          73m   10.95.4.20   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-f97bd   <none>           <none>
+
+NAMESPACE       NAME                          TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                                      AGE   SELECTOR
+istio-gateway   service/istio-gateway-istio   LoadBalancer   10.100.86.174   10.55.16.107   15021:32311/TCP,80:31605/TCP,443:30752/TCP   73m   gateway.networking.k8s.io/gateway-name=istio-gateway

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: assembly-deployment
+  namespace: qa-assembly-contour
+  labels:
+    app: assembly-webapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: assembly-webapp
+  template:
+    metadata:
+      name: assembly-webapp-pod
+      labels:
+        app: assembly-webapp
+    spec:
+      containers:
+      - name: assembly-webapp
+        image: jmnicolescu/assembly-webapp:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: assembly-service
+  namespace: qa-assembly-contour
+  labels:
+    app: assembly-webapp
+spec:
+  type: ClusterIP
+  selector:
+    app: assembly-webapp
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

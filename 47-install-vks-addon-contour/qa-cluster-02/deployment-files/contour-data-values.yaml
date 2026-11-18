@@ -1,0 +1,106 @@
+# --------------------------------------------------------------------------------------------------
+# VCF 9.1.1 / VKS 3.7.0 / contour.kubernetes.vmware.com.1.33.4-vmware.1-vks.1 
+# --------------------------------------------------------------------------------------------------
+# Goal:
+#   - Use Kubernetes Gateway API (GatewayClass, Gateway, HTTPRoute) for HTTP/HTTPS application routing.
+#   - Do NOT use traditional Kubernetes Ingress or Contour HTTPProxy resources.
+#   - Deploy two Contour controller replicas and two Envoy proxy replicas.
+#   - Expose Envoy through a Kubernetes LoadBalancer Service using IPv4 networking.
+#   - Terminate application TLS in Envoy using certificates referenced by Gateway listeners.
+#   - Retain standard logging and package-managed internal certificates for Contour/Envoy.
+#
+# Prerequisites (not configured by this file):
+#   - Compatible Gateway API CRDs installed in the VKS workload cluster.
+#   - cert-manager installed and configured if required for certificate management.
+#   - Verify or create a GatewayClass using the Contour controller and supported provisioning mode.
+#   - A working VKS LoadBalancer provider (NSX or Avi, as configured) and available IPv4 addresses.
+#   - A Gateway and application HTTPRoutes created separately in the workload cluster.
+#   - Application-facing TLS Secrets and DNS records configured separately.
+# --------------------------------------------------------------------------------------------------
+
+certificates:
+  caDuration: 8760h
+  caRenewBefore: 720h
+  leafDuration: 720h
+  leafRenewBefore: 360h
+
+contour:
+  configFileContents:
+    gateway:
+      gatewayRef:
+        name: contour-gateway
+        namespace: tanzu-system-ingress
+  disableGRPCRoutes: true
+  listenIPFamily: IPv4
+  logLevel: info
+  pspNames: vmware-system-restricted
+  replicas: 2
+  resources:
+    contour:
+      requests:
+        cpu: 128m
+        memory: 256Mi
+  service:
+    ipFamilies: []
+    ipFamilyPolicy: ""
+  useProxyProtocol: false
+
+enableSupervisorServiceRbac: false
+
+envoy:
+  bootstrap:
+    overloadManager:
+      downstreamMaxConnections: 0
+      maxHeap: 0
+  hostNetwork: false
+  hostPorts:
+    enable: false
+    http: 80
+    https: 443
+  listenIPFamily: IPv4
+  logLevel: info
+  pspNames: ""
+  service:
+    aws:
+      LBType: classic
+    disableWait: false
+    externalTrafficPolicy: Cluster
+    ipFamilies: []
+    ipFamilyPolicy: ""
+    # Request this address from the LoadBalancer provider; allocation must be verified.
+    loadBalancerIP: 10.55.16.103
+    loadBalancerTLSTermination: false
+    nodePorts:
+      http: 0
+      https: 0
+    # Exactly one 'type' field. A later type: "" would override this and could cause NodePort fallback.
+    type: LoadBalancer
+  terminationGracePeriodSeconds: 300
+  workload:
+    replicas: 2
+    resources:
+      envoy:
+        requests:
+          cpu: 128m
+          memory: 256Mi
+      envoyInitConfig:
+        requests:
+          cpu: 128m
+          memory: 256Mi
+      shutdownManager:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+    type: Deployment
+
+infrastructure_provider: vsphere
+kubernetes_distribution: ""
+kubernetes_version: 0.0.0
+namespace: tanzu-system-ingress
+nsLimitRange:
+  defaultRequests:
+    cpu: 128m
+    memory: 256Mi
+priorityClassName: ""
+registry_secret_names:
+  - contour-reg-creds

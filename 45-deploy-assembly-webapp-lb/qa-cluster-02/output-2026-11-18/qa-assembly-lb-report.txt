@@ -1,0 +1,169 @@
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl config use-context qa-cluster-02:qa-cluster-02                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Switched to context "qa-cluster-02:qa-cluster-02".
+Application namespace: qa-assembly-lb | Cluster: qa-cluster-02 | Date: 2026-11-18
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl describe namespace qa-assembly-lb                                                                                                              |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Name:         qa-assembly-lb
+Labels:       kubernetes.io/metadata.name=qa-assembly-lb
+              pod-security.kubernetes.io/audit=privileged
+              pod-security.kubernetes.io/enforce=privileged
+              pod-security.kubernetes.io/warn=privileged
+Annotations:  <none>
+Status:       Active
+
+No resource quota.
+
+No LimitRange resource.
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get all -n qa-assembly-lb -o wide                                                                                                              |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                                       READY   STATUS    RESTARTS   AGE   IP           NODE                                                 NOMINATED NODE   READINESS GATES
+pod/assembly-deployment-769955c7fd-9hp4v   1/1     Running   0          72s   10.95.2.32   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6   <none>           <none>
+pod/assembly-deployment-769955c7fd-clq5n   1/1     Running   0          72s   10.95.1.27   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-hgp9g   <none>           <none>
+pod/assembly-deployment-769955c7fd-z2rps   1/1     Running   0          72s   10.95.4.37   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-f97bd   <none>           <none>
+
+NAME                       TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE   SELECTOR
+service/assembly-service   LoadBalancer   10.104.224.69   10.55.16.13   8080:32491/TCP   72s   app=assembly-webapp
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS        IMAGES                               SELECTOR
+deployment.apps/assembly-deployment   3/3     3            3           72s   assembly-webapp   jmnicolescu/assembly-webapp:latest   app=assembly-webapp
+
+NAME                                             DESIRED   CURRENT   READY   AGE   CONTAINERS        IMAGES                               SELECTOR
+replicaset.apps/assembly-deployment-769955c7fd   3         3         3       72s   assembly-webapp   jmnicolescu/assembly-webapp:latest   app=assembly-webapp,pod-template-hash=769955c7fd
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get pods -n qa-assembly-lb -o custom-columns='POD:.metadata.name,IMAGES:.spec.containers[*].image'                                             |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+POD                                    IMAGES
+assembly-deployment-769955c7fd-9hp4v   jmnicolescu/assembly-webapp:latest
+assembly-deployment-769955c7fd-clq5n   jmnicolescu/assembly-webapp:latest
+assembly-deployment-769955c7fd-z2rps   jmnicolescu/assembly-webapp:latest
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get pods -n qa-assembly-lb -o custom-columns='POD:.metadata.name,IMAGE_IDS:.status.containerStatuses[*].imageID'                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+POD                                    IMAGE_IDS
+assembly-deployment-769955c7fd-9hp4v   docker.io/jmnicolescu/assembly-webapp@sha256:28972f9e62abc547258cf1334cd72bf55f9753eb1d01f3af4d79861f2dfc657c
+assembly-deployment-769955c7fd-clq5n   docker.io/jmnicolescu/assembly-webapp@sha256:28972f9e62abc547258cf1334cd72bf55f9753eb1d01f3af4d79861f2dfc657c
+assembly-deployment-769955c7fd-z2rps   docker.io/jmnicolescu/assembly-webapp@sha256:28972f9e62abc547258cf1334cd72bf55f9753eb1d01f3af4d79861f2dfc657c
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get services -n qa-assembly-lb -o yaml                                                                                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"assembly-webapp"},"name":"assembly-service","namespace":"qa-assembly-lb"},"spec":{"ports":[{"port":8080,"protocol":"TCP","targetPort":8080}],"selector":{"app":"assembly-webapp"},"type":"LoadBalancer"}}
+    creationTimestamp: "2026-11-18T17:30:57Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      app: assembly-webapp
+    name: assembly-service
+    namespace: qa-assembly-lb
+    resourceVersion: "916479"
+    uid: 182d9077-0e21-44f0-b97a-3ccd0a5d9aa5
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 10.104.224.69
+    clusterIPs:
+    - 10.104.224.69
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - nodePort: 32491
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      app: assembly-webapp
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 10.55.16.13
+        ipMode: VIP
+kind: List
+metadata:
+  resourceVersion: ""
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get endpointslices -n qa-assembly-lb -o wide                                                                                                   |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                     ADDRESSTYPE   PORTS   ENDPOINTS                          AGE
+assembly-service-fb66k   IPv4          8080    10.95.2.32,10.95.4.37,10.95.1.27   73s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get ingresses,networkpolicies -n qa-assembly-lb -o wide                                                                                        |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+No resources found in qa-assembly-lb namespace.
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get persistentvolumeclaims,horizontalpodautoscalers,poddisruptionbudgets -n qa-assembly-lb -o wide                                             |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+No resources found in qa-assembly-lb namespace.
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get configmaps,secrets -n qa-assembly-lb                                                                                                       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                         DATA   AGE
+configmap/kube-root-ca.crt   1      73s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get serviceaccounts,roles,rolebindings -n qa-assembly-lb                                                                                       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                     AGE
+serviceaccount/default   73s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get events -n qa-assembly-lb --sort-by=.metadata.creationTimestamp                                                                             |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+LAST SEEN   TYPE      REASON                   OBJECT                                      MESSAGE
+72s         Normal    Scheduled                pod/assembly-deployment-769955c7fd-z2rps    Successfully assigned qa-assembly-lb/assembly-deployment-769955c7fd-z2rps to qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-f97bd
+73s         Normal    SuccessfulCreate         replicaset/assembly-deployment-769955c7fd   Created pod: assembly-deployment-769955c7fd-z2rps
+73s         Warning   SyncLoadBalancerFailed   service/assembly-service                    Error syncing load balancer: failed to ensure load balancer: VirtualMachineService IP not found
+68s         Normal    EnsuringLoadBalancer     service/assembly-service                    Ensuring load balancer
+73s         Normal    ScalingReplicaSet        deployment/assembly-deployment              Scaled up replica set assembly-deployment-769955c7fd from 0 to 3
+72s         Normal    Scheduled                pod/assembly-deployment-769955c7fd-clq5n    Successfully assigned qa-assembly-lb/assembly-deployment-769955c7fd-clq5n to qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-hgp9g
+72s         Normal    Scheduled                pod/assembly-deployment-769955c7fd-9hp4v    Successfully assigned qa-assembly-lb/assembly-deployment-769955c7fd-9hp4v to qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6
+73s         Normal    SuccessfulCreate         replicaset/assembly-deployment-769955c7fd   Created pod: assembly-deployment-769955c7fd-clq5n
+73s         Normal    SuccessfulCreate         replicaset/assembly-deployment-769955c7fd   Created pod: assembly-deployment-769955c7fd-9hp4v
+72s         Normal    Pulling                  pod/assembly-deployment-769955c7fd-clq5n    Pulling image "jmnicolescu/assembly-webapp:latest"
+72s         Normal    Pulling                  pod/assembly-deployment-769955c7fd-9hp4v    Pulling image "jmnicolescu/assembly-webapp:latest"
+72s         Normal    Pulling                  pod/assembly-deployment-769955c7fd-z2rps    Pulling image "jmnicolescu/assembly-webapp:latest"
+71s         Normal    Started                  pod/assembly-deployment-769955c7fd-clq5n    Container started
+71s         Normal    Created                  pod/assembly-deployment-769955c7fd-z2rps    Container created
+71s         Normal    Started                  pod/assembly-deployment-769955c7fd-z2rps    Container started
+71s         Normal    Pulled                   pod/assembly-deployment-769955c7fd-z2rps    Successfully pulled image "jmnicolescu/assembly-webapp:latest" in 978ms (978ms including waiting). Image size: 156960349 bytes.
+71s         Normal    Created                  pod/assembly-deployment-769955c7fd-clq5n    Container created
+71s         Normal    Pulled                   pod/assembly-deployment-769955c7fd-clq5n    Successfully pulled image "jmnicolescu/assembly-webapp:latest" in 982ms (982ms including waiting). Image size: 156960349 bytes.
+71s         Normal    Started                  pod/assembly-deployment-769955c7fd-9hp4v    Container started
+71s         Normal    Created                  pod/assembly-deployment-769955c7fd-9hp4v    Container created
+71s         Normal    Pulled                   pod/assembly-deployment-769955c7fd-9hp4v    Successfully pulled image "jmnicolescu/assembly-webapp:latest" in 988ms (988ms including waiting). Image size: 156960349 bytes.
+68s         Normal    EnsuredLoadBalancer      service/assembly-service                    Ensured load balancer

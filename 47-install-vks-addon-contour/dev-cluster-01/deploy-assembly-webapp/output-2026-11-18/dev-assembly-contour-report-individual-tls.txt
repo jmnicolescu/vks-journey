@@ -1,0 +1,590 @@
+Application namespace: dev-assembly-contour | Cluster: dev-cluster-01 | Captured: 
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl config use-context dev-cluster-01:dev-cluster-01                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Switched to context "dev-cluster-01:dev-cluster-01".
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get namespace dev-assembly-contour --show-labels                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                   STATUS   AGE     LABELS
+dev-assembly-contour   Active   9m34s   kubernetes.io/metadata.name=dev-assembly-contour,pod-security.kubernetes.io/audit=privileged,pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/warn=privileged
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get all -n dev-assembly-contour -o wide                                                                                                        |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                                       READY   STATUS    RESTARTS   AGE     IP           NODE                                                   NOMINATED NODE   READINESS GATES
+pod/assembly-deployment-769955c7fd-2x5kd   1/1     Running   0          9m33s   10.95.3.64   dev-cluster-01-dev-cluster-01-np01-6jl2w-jpfjc-6vmfj   <none>           <none>
+pod/assembly-deployment-769955c7fd-d7g58   1/1     Running   0          9m33s   10.95.1.56   dev-cluster-01-dev-cluster-01-np01-6jl2w-jpfjc-nzbbj   <none>           <none>
+pod/assembly-deployment-769955c7fd-kvccc   1/1     Running   0          9m33s   10.95.2.57   dev-cluster-01-dev-cluster-01-np01-6jl2w-jpfjc-k5sgl   <none>           <none>
+
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE     SELECTOR
+service/assembly-service   ClusterIP   10.98.183.195   <none>        8080/TCP   9m33s   app=assembly-webapp
+
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS        IMAGES                               SELECTOR
+deployment.apps/assembly-deployment   3/3     3            3           9m33s   assembly-webapp   jmnicolescu/assembly-webapp:latest   app=assembly-webapp
+
+NAME                                             DESIRED   CURRENT   READY   AGE     CONTAINERS        IMAGES                               SELECTOR
+replicaset.apps/assembly-deployment-769955c7fd   3         3         3       9m33s   assembly-webapp   jmnicolescu/assembly-webapp:latest   app=assembly-webapp,pod-template-hash=769955c7fd
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get pods -n dev-assembly-contour -o custom-columns='POD:.metadata.name,IMAGES:.spec.containers[*].image'                                       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+POD                                    IMAGES
+assembly-deployment-769955c7fd-2x5kd   jmnicolescu/assembly-webapp:latest
+assembly-deployment-769955c7fd-d7g58   jmnicolescu/assembly-webapp:latest
+assembly-deployment-769955c7fd-kvccc   jmnicolescu/assembly-webapp:latest
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get endpointslices -n dev-assembly-contour -o wide                                                                                             |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                     ADDRESSTYPE   PORTS   ENDPOINTS                          AGE
+assembly-service-f52bf   IPv4          8080    10.95.3.64,10.95.2.57,10.95.1.56   9m33s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gatewayclass                                                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME      CONTROLLER                             ACCEPTED   AGE
+contour   projectcontour.io/gateway-controller   Unknown    10m
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gateways -A                                                                                                                                |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE              NAME              CLASS     ADDRESS        PROGRAMMED   AGE
+tanzu-system-ingress   contour-gateway   contour   10.55.16.102   True         10m
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gateways -A -o yaml                                                                                                                        |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+apiVersion: v1
+items:
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: Gateway
+  metadata:
+    creationTimestamp: "2026-11-18T15:51:24Z"
+    generation: 2
+    name: contour-gateway
+    namespace: tanzu-system-ingress
+    resourceVersion: "1014032"
+    uid: b6a7718f-d6e0-4c35-b496-0a2966268f92
+  spec:
+    gatewayClassName: contour
+    listeners:
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: dev-assembly-contour.platformlab.vcf
+      name: http
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: dev-mongo-express-contour.platformlab.vcf
+      name: http-mongo-express
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: dev-assembly-contour.platformlab.vcf
+      name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+        - group: ""
+          kind: Secret
+          name: assembly-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: dev-mongo-express-contour.platformlab.vcf
+      name: https-mongo-express
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+        - group: ""
+          kind: Secret
+          name: mongo-express-tls
+        mode: Terminate
+  status:
+    addresses:
+    - type: IPAddress
+      value: 10.55.16.102
+    conditions:
+    - lastTransitionTime: "2026-11-18T16:01:19Z"
+      message: Gateway is accepted
+      observedGeneration: 2
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2026-11-18T16:01:19Z"
+      message: Valid Gateway
+      observedGeneration: 2
+      reason: Programmed
+      status: "True"
+      type: Programmed
+    listeners:
+    - attachedRoutes: 1
+      conditions:
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Valid listener
+        observedGeneration: 2
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Listener accepted
+        observedGeneration: 2
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Listener references resolved
+        observedGeneration: 2
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: https-mongo-express
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+    - attachedRoutes: 2
+      conditions:
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Valid listener
+        observedGeneration: 2
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Listener accepted
+        observedGeneration: 2
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Listener references resolved
+        observedGeneration: 2
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: http
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+    - attachedRoutes: 1
+      conditions:
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Valid listener
+        observedGeneration: 2
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Listener accepted
+        observedGeneration: 2
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Listener references resolved
+        observedGeneration: 2
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: http-mongo-express
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+    - attachedRoutes: 2
+      conditions:
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Valid listener
+        observedGeneration: 2
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Listener accepted
+        observedGeneration: 2
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Listener references resolved
+        observedGeneration: 2
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: https
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+kind: List
+metadata:
+  resourceVersion: ""
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Gateway listener summary: tanzu-system-ingress/contour-gateway                                                                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+LISTENER             PROTOCOL  PORT  HOSTNAME                                   CERTIFICATE_SECRET                      ACCEPTED  PROGRAMMED  RESOLVED_REFS
+http                 HTTP      80    dev-assembly-contour.platformlab.vcf       -                                       True      True        True
+http-mongo-express   HTTP      80    dev-mongo-express-contour.platformlab.vcf  -                                       True      True        True
+https                HTTPS     443   dev-assembly-contour.platformlab.vcf       tanzu-system-ingress/assembly-tls       True      True        True
+https-mongo-express  HTTPS     443   dev-mongo-express-contour.platformlab.vcf  tanzu-system-ingress/mongo-express-tls  True      True        True
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Gateway configuration: listener, hostname, protocol, port, TLS mode and certificate Secrets                                                            |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+{
+  "namespace": "tanzu-system-ingress",
+  "gateway": "contour-gateway",
+  "gatewayClass": "contour",
+  "listeners": [
+    {
+      "name": "http",
+      "hostname": "dev-assembly-contour.platformlab.vcf",
+      "protocol": "HTTP",
+      "port": 80,
+      "tlsMode": null,
+      "certificates": []
+    },
+    {
+      "name": "http-mongo-express",
+      "hostname": "dev-mongo-express-contour.platformlab.vcf",
+      "protocol": "HTTP",
+      "port": 80,
+      "tlsMode": null,
+      "certificates": []
+    },
+    {
+      "name": "https",
+      "hostname": "dev-assembly-contour.platformlab.vcf",
+      "protocol": "HTTPS",
+      "port": 443,
+      "tlsMode": "Terminate",
+      "certificates": [
+        {
+          "group": "",
+          "kind": "Secret",
+          "namespace": "tanzu-system-ingress",
+          "name": "assembly-tls"
+        }
+      ]
+    },
+    {
+      "name": "https-mongo-express",
+      "hostname": "dev-mongo-express-contour.platformlab.vcf",
+      "protocol": "HTTPS",
+      "port": 443,
+      "tlsMode": "Terminate",
+      "certificates": [
+        {
+          "group": "",
+          "kind": "Secret",
+          "namespace": "tanzu-system-ingress",
+          "name": "mongo-express-tls"
+        }
+      ]
+    }
+  ]
+}
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get secret assembly-tls -n tanzu-system-ingress                                                                                                |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME           TYPE                DATA   AGE
+assembly-tls   kubernetes.io/tls   2      8s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Public TLS certificate: tanzu-system-ingress/assembly-tls (tls.crt)                                                                                    |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+subject=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=Digital Technology, CN=dev-assembly-contour.platformlab.vcf
+issuer=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=PRIVATE CA, CN=CA.platformlab.vcf
+notBefore=Nov 17 10:17:55 2026 GMT
+notAfter=Nov 14 10:17:55 2036 GMT
+X509v3 Subject Alternative Name: 
+    DNS:dev-assembly-contour.platformlab.vcf
+sha256 Fingerprint=21:43:B0:3A:C8:60:75:6C:CB:E4:72:E6:48:5B:3D:72:8F:97:16:F8:C1:77:20:87:3D:85:11:00:0A:80:E1:31
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get secret mongo-express-tls -n tanzu-system-ingress                                                                                           |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                TYPE                DATA   AGE
+mongo-express-tls   kubernetes.io/tls   2      9s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Public TLS certificate: tanzu-system-ingress/mongo-express-tls (tls.crt)                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+subject=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=Digital Technology, CN=dev-mongo-express-contour.platformlab.vcf
+issuer=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=PRIVATE CA, CN=CA.platformlab.vcf
+notBefore=Nov 17 10:18:02 2026 GMT
+notAfter=Nov 14 10:18:02 2036 GMT
+X509v3 Subject Alternative Name: 
+    DNS:dev-mongo-express-contour.platformlab.vcf
+sha256 Fingerprint=66:6B:88:E4:13:B7:3C:89:3F:D0:99:05:D4:C4:D6:72:B3:C9:B8:CC:B7:F1:61:CF:07:78:33:A0:DD:C5:BE:FA
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gateways -A -o json | jq (namespace, gateway, listeners and conditions)                                                                    |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+{
+  "namespace": "tanzu-system-ingress",
+  "gateway": "contour-gateway",
+  "listeners": [
+    {
+      "name": "https-mongo-express",
+      "attachedRoutes": 1,
+      "conditions": [
+        {
+          "type": "Programmed",
+          "status": "True",
+          "reason": "Programmed"
+        },
+        {
+          "type": "Accepted",
+          "status": "True",
+          "reason": "Accepted"
+        },
+        {
+          "type": "ResolvedRefs",
+          "status": "True",
+          "reason": "ResolvedRefs"
+        }
+      ]
+    },
+    {
+      "name": "http",
+      "attachedRoutes": 2,
+      "conditions": [
+        {
+          "type": "Programmed",
+          "status": "True",
+          "reason": "Programmed"
+        },
+        {
+          "type": "Accepted",
+          "status": "True",
+          "reason": "Accepted"
+        },
+        {
+          "type": "ResolvedRefs",
+          "status": "True",
+          "reason": "ResolvedRefs"
+        }
+      ]
+    },
+    {
+      "name": "http-mongo-express",
+      "attachedRoutes": 1,
+      "conditions": [
+        {
+          "type": "Programmed",
+          "status": "True",
+          "reason": "Programmed"
+        },
+        {
+          "type": "Accepted",
+          "status": "True",
+          "reason": "Accepted"
+        },
+        {
+          "type": "ResolvedRefs",
+          "status": "True",
+          "reason": "ResolvedRefs"
+        }
+      ]
+    },
+    {
+      "name": "https",
+      "attachedRoutes": 2,
+      "conditions": [
+        {
+          "type": "Programmed",
+          "status": "True",
+          "reason": "Programmed"
+        },
+        {
+          "type": "Accepted",
+          "status": "True",
+          "reason": "Accepted"
+        },
+        {
+          "type": "ResolvedRefs",
+          "status": "True",
+          "reason": "ResolvedRefs"
+        }
+      ]
+    }
+  ]
+}
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get httproutes -n dev-assembly-contour                                                                                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                     HOSTNAMES                                  AGE
+assembly-http-redirect   ["dev-assembly-contour.platformlab.vcf"]   9m34s
+assembly-httproute       ["dev-assembly-contour.platformlab.vcf"]   9m34s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get httproutes -n dev-assembly-contour -o yaml                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+apiVersion: v1
+items:
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: HTTPRoute
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"assembly-http-redirect","namespace":"dev-assembly-contour"},"spec":{"hostnames":["dev-assembly-contour.platformlab.vcf"],"parentRefs":[{"name":"contour-gateway","namespace":"tanzu-system-ingress","sectionName":"http"}],"rules":[{"filters":[{"requestRedirect":{"scheme":"https","statusCode":301},"type":"RequestRedirect"}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+    creationTimestamp: "2026-11-18T15:51:54Z"
+    generation: 1
+    name: assembly-http-redirect
+    namespace: dev-assembly-contour
+    resourceVersion: "1014030"
+    uid: 84fc40c7-31f5-46c1-82df-a3e339305e6c
+  spec:
+    hostnames:
+    - dev-assembly-contour.platformlab.vcf
+    parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: contour-gateway
+      namespace: tanzu-system-ingress
+      sectionName: http
+    rules:
+    - filters:
+      - requestRedirect:
+          scheme: https
+          statusCode: 301
+        type: RequestRedirect
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+  status:
+    parents:
+    - conditions:
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: References resolved
+        observedGeneration: 1
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      - lastTransitionTime: "2026-11-18T16:01:19Z"
+        message: Accepted HTTPRoute
+        observedGeneration: 1
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      controllerName: projectcontour.io/gateway-controller
+      parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: contour-gateway
+        namespace: tanzu-system-ingress
+        sectionName: http
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: HTTPRoute
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"assembly-httproute","namespace":"dev-assembly-contour"},"spec":{"hostnames":["dev-assembly-contour.platformlab.vcf"],"parentRefs":[{"name":"contour-gateway","namespace":"tanzu-system-ingress","sectionName":"https"}],"rules":[{"backendRefs":[{"name":"assembly-service","port":8080}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+    creationTimestamp: "2026-11-18T15:51:54Z"
+    generation: 1
+    name: assembly-httproute
+    namespace: dev-assembly-contour
+    resourceVersion: "1011567"
+    uid: 26c4c5d4-4af7-4607-ac3f-8b57106d4aa5
+  spec:
+    hostnames:
+    - dev-assembly-contour.platformlab.vcf
+    parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: contour-gateway
+      namespace: tanzu-system-ingress
+      sectionName: https
+    rules:
+    - backendRefs:
+      - group: ""
+        kind: Service
+        name: assembly-service
+        port: 8080
+        weight: 1
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+  status:
+    parents:
+    - conditions:
+      - lastTransitionTime: "2026-11-18T15:51:54Z"
+        message: References resolved
+        observedGeneration: 1
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      - lastTransitionTime: "2026-11-18T15:51:54Z"
+        message: Accepted HTTPRoute
+        observedGeneration: 1
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      controllerName: projectcontour.io/gateway-controller
+      parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: contour-gateway
+        namespace: tanzu-system-ingress
+        sectionName: https
+kind: List
+metadata:
+  resourceVersion: ""
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get deployments,daemonsets,pods,services -n tanzu-system-ingress -o wide                                                                       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS               IMAGES                                                                                                                                                                                                                                                                                                                                                SELECTOR
+deployment.apps/contour   2/2     2            2           12m   contour                  projects.packages.broadcom.com/vsphere/supervisor/vks-standard-packages/3.7.0-20260618/vks-addons@sha256:470dc8b03cee377a308a52429ea18cc77810b1d1b977863674c95b7d2a2a80ff                                                                                                                                                                             app=contour,kapp.k14s.io/app=1795016933860922468
+deployment.apps/envoy     2/2     2            2           12m   shutdown-manager,envoy   projects.packages.broadcom.com/vsphere/supervisor/vks-standard-packages/3.7.0-20260618/vks-addons@sha256:470dc8b03cee377a308a52429ea18cc77810b1d1b977863674c95b7d2a2a80ff,projects.packages.broadcom.com/vsphere/supervisor/vks-standard-packages/3.7.0-20260618/vks-addons@sha256:0931afa3ed8a012e66b28ed0af91ddbdfabe597a9baa099bf35c2989a71805ba   app=envoy,kapp.k14s.io/app=1795016933860922468
+
+NAME                          READY   STATUS    RESTARTS   AGE   IP           NODE                                                   NOMINATED NODE   READINESS GATES
+pod/contour-b8d5b76cb-jpmjp   1/1     Running   0          12m   10.95.1.55   dev-cluster-01-dev-cluster-01-np01-6jl2w-jpfjc-nzbbj   <none>           <none>
+pod/contour-b8d5b76cb-llx5k   1/1     Running   0          12m   10.95.3.62   dev-cluster-01-dev-cluster-01-np01-6jl2w-jpfjc-6vmfj   <none>           <none>
+pod/envoy-78d544f94d-gc469    2/2     Running   0          12m   10.95.2.56   dev-cluster-01-dev-cluster-01-np01-6jl2w-jpfjc-k5sgl   <none>           <none>
+pod/envoy-78d544f94d-kbd86    2/2     Running   0          12m   10.95.3.63   dev-cluster-01-dev-cluster-01-np01-6jl2w-jpfjc-6vmfj   <none>           <none>
+
+NAME              TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)                      AGE   SELECTOR
+service/contour   ClusterIP      10.102.162.191   <none>         8001/TCP                     12m   app=contour,kapp.k14s.io/app=1795016933860922468
+service/envoy     LoadBalancer   10.98.219.47     10.55.16.102   80:31836/TCP,443:31273/TCP   12m   app=envoy,kapp.k14s.io/app=1795016933860922468

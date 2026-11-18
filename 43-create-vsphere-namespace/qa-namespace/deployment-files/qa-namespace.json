@@ -1,0 +1,32 @@
+{
+  "cluster": "domain-c9",
+  "access_list": [
+    {
+      "domain": "vsphere.local",
+      "subject": "LabUsers",
+      "subject_type": "GROUP",
+      "role": "VIEW"
+    }
+  ],
+  "resource_spec": {
+    "cpu_limit": 68110,
+    "memory_limit": 307200,
+    "storage_request_limit": 512000
+  },
+  "storage_specs": [
+    {
+      "policy": "aa6d5a82-1c88-45da-85d3-3d74b91a5bad",
+      "limit": 512000
+    }
+  ],
+  "vm_service_spec": {
+    "vm_classes": [
+      "best-effort-small",
+      "best-effort-medium",
+      "best-effort-large",
+      "best-effort-xlarge"
+    ]
+  },
+  "namespace": "qa-namespace",
+  "description": "qa-namespace"
+}

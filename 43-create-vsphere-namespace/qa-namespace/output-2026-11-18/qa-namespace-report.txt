@@ -1,0 +1,79 @@
+========================================================================================================
+VSPHERE NAMESPACE CONFIGURATION | dev-namespace
+========================================================================================================
+Generated : 2026-11-18
+vCenter   : mgmt-vcsa.platformlab.vcf
+Namespace : qa-namespace
+
+NAMESPACE AND PLACEMENT
+--------------------------------------------------------------------------------------------------------
+Namespace                qa-namespace
+Description              qa-namespace
+Configuration status     RUNNING
+Supervisor ID            63b34a8b-0d3b-4d1a-9544-4ac6828e8fad
+Self-service             false
+Creator                  -
+Zones                    lab-zone-01
+Infrastructure policies  -
+
+RESOURCE QUOTAS AND POD RESERVATIONS
+--------------------------------------------------------------------------------------------------------
+RESOURCE  LIMIT   LIMIT (GiB)  POD RESERVATION  UNIT
+CPU       68110   -            0                MHz
+Memory    307200  300          1244             MiB
+Storage   512000  500          225796           MiB
+
+ASSIGNED STORAGE POLICIES
+--------------------------------------------------------------------------------------------------------
+POLICY                       LIMIT (MiB)  LIMIT (GiB)  POLICY ID
+vSAN Default Storage Policy  512000       500          aa6d5a82-1c88-45da-85d3-3d74b91a5bad
+
+NAMESPACE ACCESS
+--------------------------------------------------------------------------------------------------------
+TYPE   SUBJECT   DOMAIN         ROLE
+GROUP  LabUsers  vsphere.local  VIEW
+
+ALLOWED VM CLASSES
+--------------------------------------------------------------------------------------------------------
+best-effort-large
+best-effort-medium
+best-effort-small
+best-effort-xlarge
+
+CONTENT LIBRARY ASSOCIATIONS
+--------------------------------------------------------------------------------------------------------
+Service     : Kubernetes Service (Supervisor)
+Library     : Kubernetes Service Content Library
+Library ID  : 16a01d6f-a3e5-4d86-8b2e-90a7b1ba1ece
+Type        : SUBSCRIBED
+Last sync   : 2026-11-18
+
+
+KUBERNETES SERVICE LIBRARY ITEMS
+--------------------------------------------------------------------------------------------------------
+ITEM                                                    TYPE  CACHED  SIZE (GiB)  SECURITY COMPLIANT  CERTIFICATE
+ob-25653793-ubuntu-2404-amd64-v1.35.6---vmware.2-vkr.3  ovf   false   0           true                NOT_AVAILABLE
+ob-25653794-photon-5-amd64-v1.35.6---vmware.2-vkr.3     ovf   true    4.33        true                VERIFIED
+ob-25653795-ubuntu-2204-amd64-v1.35.6---vmware.2-vkr.3  ovf   false   0           true                NOT_AVAILABLE
+
+NAMESPACE NETWORK CONFIGURATION
+--------------------------------------------------------------------------------------------------------
+Network provider          NSX_VPC
+VPC path                  /orgs/default/projects/default/vpcs/qa-namespace_qkwu7
+VPC auto-created          true
+Default subnet size       32
+Private CIDRs             172.30.0.0/16
+Default workload network  -
+vSphere networks          -
+
+SHARED SUBNETS
+--------------------------------------------------------------------------------------------------------
+None
+
+NAMESPACE EDGES
+--------------------------------------------------------------------------------------------------------
+None
+
+CONFIGURATION MESSAGES
+--------------------------------------------------------------------------------------------------------
+None

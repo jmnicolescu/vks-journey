@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+#-------------+--------------------------------------------------------------------+
+# Script Name | 01-create-supervisor-context.sh                                    |
+# Updated     | 2026-11-15                                                         |
+# Version     | 1.12                                                               |
+# VCF Version | 9.1.1.0-545627-2026-09                                             |
+# Description | Create or recreate and activate the VCF CLI Supervisor context.    |
+#-------------+--------------------------------------------------------------------+
+
+#-------------+--------------------------------------------------------------------+
+# Requirement | Details                                                            |
+#-------------+--------------------------------------------------------------------+
+# Runtime     | Linux or macOS with Bash.                                          |
+# Tools       | VCF CLI, kubectl and openssl.                                      |
+# Access      | SSO credentials and Supervisor API connectivity.                   |
+# Inputs      | Set credentials, Supervisor endpoint and context or cluster.       |
+# Permissions | Authenticate and read nodes on the target cluster.                 |
+# Files       | Write local CLI configuration, kubeconfig and /tmp/SUPERVISOR.crt. |
+# Behavior    | Recreates the local context and changes the active context.        |
+#-------------+--------------------------------------------------------------------+
+
+# ------------------------------------------------------------------------------------------------------
+# SECURITY WARNING:
+# The VCF_CLI_VSPHERE_PASSWORD variable contains a plaintext vCenter SSO password.
+# Hardcoding credentials is NOT recommended for production environments.
+# Never commit scripts containing passwords to Git repositories or share them publicly.
+# Prefer secure credential management or interactive authentication.
+# If exposed, rotate the password immediately.
+# ------------------------------------------------------------------------------------------------------
+set -euo pipefail
+
+export VCF_CLI_VSPHERE_USERNAME='labadministrator@vsphere.local'
+export VCF_CLI_VSPHERE_PASSWORD='VMwar3!!VMwar3!!'
+SUPERVISOR_API_ENDPOINT='10.55.16.4'
+CERTIFICATE_FILE=/tmp/SUPERVISOR.crt
+CONTEXT_NAME=supervisor
+
+echo "Checking that vcf, kubectl and openssl are available..."
+for cmd in vcf kubectl openssl; do
+  if ! command -v ${cmd} >/dev/null 2>&1; then
+    echo "ERROR: ${cmd} is not installed or is not available in the system PATH." >&2
+    echo "Please install ${cmd} and ensure it is accessible before proceeding." >&2
+    exit 1
+  fi
+done
+
+echo "Removing the previous Supervisor certificate file..."
+rm -f ${CERTIFICATE_FILE}
+
+echo "Retrieving the Supervisor API certificate..."
+openssl s_client -connect ${SUPERVISOR_API_ENDPOINT}:443 -showcerts </dev/null 2>/dev/null  | openssl x509 -outform PEM > ${CERTIFICATE_FILE}
+
+echo "Deleting the old context if it exists..."
+vcf context delete ${CONTEXT_NAME} -y || true
+
+# Not used because --insecure-skip-tls-verify disables verification of the Supervisor TLS certificate.
+# vcf context create ${CONTEXT_NAME} \
+#   --endpoint ${SUPERVISOR_API_ENDPOINT} \
+#   --username ${VCF_CLI_VSPHERE_USERNAME} \
+#   --insecure-skip-tls-verify \
+#   --type k8s \
+#   --auth-type basic
+
+echo "Creating Supervisor context ${CONTEXT_NAME} using the saved TLS certificate..."
+vcf context create ${CONTEXT_NAME} \
+  --endpoint ${SUPERVISOR_API_ENDPOINT} \
+  --username ${VCF_CLI_VSPHERE_USERNAME} \
+  --ca-certificate ${CERTIFICATE_FILE} \
+  --type k8s \
+  --auth-type basic
+
+# ------------------------------------------------------------------------------------------------------
+# Use either the VCF or the kubectl context command below.
+# vcf context use ${CONTEXT_NAME}
+# vcf context list
+# ------------------------------------------------------------------------------------------------------
+
+echo "Activating ${CONTEXT_NAME} context: ${CONTEXT_NAME}"
+kubectl config use-context ${CONTEXT_NAME}
+
+echo "Display available contexts."
+kubectl config get-contexts
+
+echo "Verifying Kubernetes cluster connectivity..."
+kubectl get nodes
+
+echo "SUCCESS: ${CONTEXT_NAME} context configured successfully."
+

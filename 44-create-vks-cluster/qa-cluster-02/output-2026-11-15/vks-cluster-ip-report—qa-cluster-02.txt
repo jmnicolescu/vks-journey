@@ -1,0 +1,849 @@
+-------------------------------------------------------------------------------------------
+| VKS Cluster IP Report — qa-cluster-02                                                   |
+-------------------------------------------------------------------------------------------
+Cluster            : qa-cluster-02
+Context            : qa-cluster-02:qa-cluster-02
+API server         : https://10.55.16.9:6443
+Mode               : Read-only discovery
+TLS verification   : Enabled (kubeconfig)
+Namespace          : All namespaces
+
+-------------------------------------------------------------------------------------------
+| 1. NETWORK CIDR AND IP SUMMARY - qa-cluster-02:qa-cluster-02                            |
+-------------------------------------------------------------------------------------------
+NETWORK              CIDRs / IPs
+Node IPs             172.30.0.2,172.30.0.3,172.30.0.4,172.30.0.5,172.30.0.6,172.30.0.7
+Pod CIDRs            10.95.0.0/24,10.95.1.0/24,10.95.2.0/24,10.95.3.0/24,10.95.4.0/24,10.95.5.0/24
+Service CIDRs        10.96.0.0/12
+Load balancer IPs    <none>
+Ingress IPs          <none>
+
+Pod CIDRs are the ranges allocated to nodes; the full cluster pod range may be larger.
+
+-------------------------------------------------------------------------------------------
+| 2. NODE ADDRESSES - qa-cluster-02:qa-cluster-02                                         |
+-------------------------------------------------------------------------------------------
+NODE                                                 INTERNAL-IP   EXTERNAL-IP   HOSTNAME
+qa-cluster-02-6xqsg-b5dqg                            172.30.0.6    <none>        
+qa-cluster-02-6xqsg-bdl97                            172.30.0.7    <none>        
+qa-cluster-02-6xqsg-vn2nz                            172.30.0.2    <none>        
+qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-p5ccn   172.30.0.4    <none>        
+qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-vs9qj   172.30.0.3    <none>        
+qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-w2cpx   172.30.0.5    <none>        
+
+-------------------------------------------------------------------------------------------
+| 3. NODE POD CIDRs - qa-cluster-02:qa-cluster-02                                         |
+-------------------------------------------------------------------------------------------
+NODE                                                 POD-CIDR       POD-CIDRS
+qa-cluster-02-6xqsg-b5dqg                            10.95.4.0/24   10.95.4.0/24
+qa-cluster-02-6xqsg-bdl97                            10.95.5.0/24   10.95.5.0/24
+qa-cluster-02-6xqsg-vn2nz                            10.95.0.0/24   10.95.0.0/24
+qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-p5ccn   10.95.1.0/24   10.95.1.0/24
+qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-vs9qj   10.95.3.0/24   10.95.3.0/24
+qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-w2cpx   10.95.2.0/24   10.95.2.0/24
+
+-------------------------------------------------------------------------------------------
+| 4. CLUSTER SERVICE CIDRs - qa-cluster-02:qa-cluster-02                                  |
+-------------------------------------------------------------------------------------------
+NAME         SERVICE-CIDRS
+kubernetes   10.96.0.0/12
+
+-------------------------------------------------------------------------------------------
+| 5. POD ADDRESSES - qa-cluster-02:qa-cluster-02                                          |
+-------------------------------------------------------------------------------------------
+NAMESPACE                      POD                                                 PHASE     POD-IP       POD-IPS      NODE
+kube-system                    antrea-agent-4lfq6                                  Running   172.30.0.5   172.30.0.5   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-w2cpx
+kube-system                    antrea-agent-6nv4q                                  Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+kube-system                    antrea-agent-6s2kd                                  Running   172.30.0.7   172.30.0.7   qa-cluster-02-6xqsg-bdl97
+kube-system                    antrea-agent-d95tc                                  Running   172.30.0.6   172.30.0.6   qa-cluster-02-6xqsg-b5dqg
+kube-system                    antrea-agent-mjkj5                                  Running   172.30.0.3   172.30.0.3   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-vs9qj
+kube-system                    antrea-agent-rk2tx                                  Running   172.30.0.4   172.30.0.4   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-p5ccn
+kube-system                    antrea-controller-755b8d6dd6-4cd4l                  Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+kube-system                    coredns-74754687d6-cm596                            Running   10.95.0.9    10.95.0.9    qa-cluster-02-6xqsg-vn2nz
+kube-system                    coredns-74754687d6-zjk7b                            Running   10.95.0.10   10.95.0.10   qa-cluster-02-6xqsg-vn2nz
+kube-system                    etcd-qa-cluster-02-6xqsg-b5dqg                      Running   172.30.0.6   172.30.0.6   qa-cluster-02-6xqsg-b5dqg
+kube-system                    etcd-qa-cluster-02-6xqsg-bdl97                      Running   172.30.0.7   172.30.0.7   qa-cluster-02-6xqsg-bdl97
+kube-system                    etcd-qa-cluster-02-6xqsg-vn2nz                      Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+kube-system                    kube-apiserver-qa-cluster-02-6xqsg-b5dqg            Running   172.30.0.6   172.30.0.6   qa-cluster-02-6xqsg-b5dqg
+kube-system                    kube-apiserver-qa-cluster-02-6xqsg-bdl97            Running   172.30.0.7   172.30.0.7   qa-cluster-02-6xqsg-bdl97
+kube-system                    kube-apiserver-qa-cluster-02-6xqsg-vn2nz            Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+kube-system                    kube-controller-manager-qa-cluster-02-6xqsg-b5dqg   Running   172.30.0.6   172.30.0.6   qa-cluster-02-6xqsg-b5dqg
+kube-system                    kube-controller-manager-qa-cluster-02-6xqsg-bdl97   Running   172.30.0.7   172.30.0.7   qa-cluster-02-6xqsg-bdl97
+kube-system                    kube-controller-manager-qa-cluster-02-6xqsg-vn2nz   Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+kube-system                    kube-proxy-67qfg                                    Running   172.30.0.5   172.30.0.5   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-w2cpx
+kube-system                    kube-proxy-7mg5d                                    Running   172.30.0.3   172.30.0.3   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-vs9qj
+kube-system                    kube-proxy-cj2h7                                    Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+kube-system                    kube-proxy-hpfqb                                    Running   172.30.0.6   172.30.0.6   qa-cluster-02-6xqsg-b5dqg
+kube-system                    kube-proxy-p79s2                                    Running   172.30.0.4   172.30.0.4   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-p5ccn
+kube-system                    kube-proxy-vn8bj                                    Running   172.30.0.7   172.30.0.7   qa-cluster-02-6xqsg-bdl97
+kube-system                    kube-scheduler-qa-cluster-02-6xqsg-b5dqg            Running   172.30.0.6   172.30.0.6   qa-cluster-02-6xqsg-b5dqg
+kube-system                    kube-scheduler-qa-cluster-02-6xqsg-bdl97            Running   172.30.0.7   172.30.0.7   qa-cluster-02-6xqsg-bdl97
+kube-system                    kube-scheduler-qa-cluster-02-6xqsg-vn2nz            Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+kube-system                    metrics-server-5544fcbcd5-zl6vc                     Running   10.95.0.6    10.95.0.6    qa-cluster-02-6xqsg-vn2nz
+kube-system                    snapshot-controller-6dfdb5b8bc-gh2xp                Running   10.95.0.3    10.95.0.3    qa-cluster-02-6xqsg-vn2nz
+secretgen-controller           secretgen-controller-768b5b96cb-2g2h9               Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+tkg-system                     kapp-controller-756d7c644b-9wcbb                    Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+vmware-system-auth             guest-cluster-auth-svc-dpf95                        Running   172.30.0.6   172.30.0.6   qa-cluster-02-6xqsg-b5dqg
+vmware-system-auth             guest-cluster-auth-svc-q6ttm                        Running   172.30.0.7   172.30.0.7   qa-cluster-02-6xqsg-bdl97
+vmware-system-auth             guest-cluster-auth-svc-xr5vt                        Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+vmware-system-cloud-provider   guest-cluster-cloud-provider-7d4978b899-45pjg       Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+vmware-system-csi              vsphere-csi-controller-86c9557c9-gs29l              Running   10.95.0.7    10.95.0.7    qa-cluster-02-6xqsg-vn2nz
+vmware-system-csi              vsphere-csi-node-9htzb                              Running   172.30.0.6   172.30.0.6   qa-cluster-02-6xqsg-b5dqg
+vmware-system-csi              vsphere-csi-node-hxpnl                              Running   172.30.0.4   172.30.0.4   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-p5ccn
+vmware-system-csi              vsphere-csi-node-kbfkg                              Running   172.30.0.5   172.30.0.5   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-w2cpx
+vmware-system-csi              vsphere-csi-node-llnpb                              Running   172.30.0.3   172.30.0.3   qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-vs9qj
+vmware-system-csi              vsphere-csi-node-ng4hc                              Running   172.30.0.7   172.30.0.7   qa-cluster-02-6xqsg-bdl97
+vmware-system-csi              vsphere-csi-node-smlkc                              Running   172.30.0.2   172.30.0.2   qa-cluster-02-6xqsg-vn2nz
+vmware-system-helm             helm-controller-6b89f9598-mggcw                     Running   10.95.0.5    10.95.0.5    qa-cluster-02-6xqsg-vn2nz
+vmware-system-helm             source-controller-db98cfb7b-cn2pp                   Running   10.95.0.8    10.95.0.8    qa-cluster-02-6xqsg-vn2nz
+
+-------------------------------------------------------------------------------------------
+| 6. SERVICE CLUSTER ADDRESSES - qa-cluster-02:qa-cluster-02                              |
+-------------------------------------------------------------------------------------------
+NAMESPACE            SERVICE                  TYPE        CLUSTER-IPS     PORTS        PROTOCOLS
+default              kubernetes               ClusterIP   10.96.0.1       443          TCP
+default              supervisor               ClusterIP   None            6443         TCP
+kube-system          antrea                   ClusterIP   10.98.129.100   443          TCP
+kube-system          kube-dns                 ClusterIP   10.96.0.10      53,53,9153   UDP,TCP,TCP
+kube-system          metrics-server           ClusterIP   10.105.23.232   443          TCP
+tkg-system           packaging-api            ClusterIP   10.109.135.20   443,8080     TCP,TCP
+vmware-system-csi    vsphere-csi-controller   ClusterIP   10.107.143.13   2112,2113    TCP,TCP
+vmware-system-helm   source-controller        ClusterIP   10.98.223.21    80           TCP
+
+-------------------------------------------------------------------------------------------
+| 7. SERVICE LOAD BALANCER ADDRESSES - qa-cluster-02:qa-cluster-02                        |
+-------------------------------------------------------------------------------------------
+NAMESPACE            SERVICE                  TYPE        LB-IPS   LB-HOSTNAMES
+default              kubernetes               ClusterIP   <none>   <none>
+default              supervisor               ClusterIP   <none>   <none>
+kube-system          antrea                   ClusterIP   <none>   <none>
+kube-system          kube-dns                 ClusterIP   <none>   <none>
+kube-system          metrics-server           ClusterIP   <none>   <none>
+tkg-system           packaging-api            ClusterIP   <none>   <none>
+vmware-system-csi    vsphere-csi-controller   ClusterIP   <none>   <none>
+vmware-system-helm   source-controller        ClusterIP   <none>   <none>
+A LoadBalancer service with no LB address has no assigned address reported yet.
+
+-------------------------------------------------------------------------------------------
+| 8. SERVICE EXTERNAL ADDRESSES - qa-cluster-02:qa-cluster-02                             |
+-------------------------------------------------------------------------------------------
+NAMESPACE            SERVICE                  TYPE        EXTERNAL-IPS   EXTERNAL-NAME
+default              kubernetes               ClusterIP   <none>         <none>
+default              supervisor               ClusterIP   <none>         <none>
+kube-system          antrea                   ClusterIP   <none>         <none>
+kube-system          kube-dns                 ClusterIP   <none>         <none>
+kube-system          metrics-server           ClusterIP   <none>         <none>
+tkg-system           packaging-api            ClusterIP   <none>         <none>
+vmware-system-csi    vsphere-csi-controller   ClusterIP   <none>         <none>
+vmware-system-helm   source-controller        ClusterIP   <none>         <none>
+
+-------------------------------------------------------------------------------------------
+| 9. ENDPOINT SLICE ADDRESSES - qa-cluster-02:qa-cluster-02                               |
+-------------------------------------------------------------------------------------------
+NAMESPACE            SERVICE                  SLICE                          ADDRESS-TYPE   ALL-ADDRESSES                      READY-ADDRESSES                    NOT-READY-ADDRESSES   PORTS
+default              kubernetes               kubernetes                     IPv4           172.30.0.2,172.30.0.6,172.30.0.7   172.30.0.2,172.30.0.6,172.30.0.7   <none>                6443
+default              supervisor               supervisor-88kdh               IPv4           10.55.16.4                         10.55.16.4                         <none>                6443
+kube-system          antrea                   antrea-s2dk8                   IPv4           172.30.0.2                         172.30.0.2                         <none>                10349
+kube-system          kube-dns                 kube-dns-mdrpq                 IPv4           10.95.0.9,10.95.0.10               10.95.0.9,10.95.0.10               <none>                53,53,9153
+kube-system          metrics-server           metrics-server-hwkxl           IPv4           10.95.0.6                          10.95.0.6                          <none>                4443
+tkg-system           packaging-api            packaging-api-zp7sr            IPv4           172.30.0.2                         172.30.0.2                         <none>                8080,10100
+vmware-system-csi    vsphere-csi-controller   vsphere-csi-controller-r6x4s   IPv4           10.95.0.7                          10.95.0.7                          <none>                2112,2113
+vmware-system-helm   source-controller        source-controller-nhpmd        IPv4           10.95.0.8                          10.95.0.8                          <none>                9090
+Endpoints with unspecified readiness appear only in ALL-ADDRESSES.
+
+-------------------------------------------------------------------------------------------
+| 10. INGRESS ADDRESSES - qa-cluster-02:qa-cluster-02                                     |
+-------------------------------------------------------------------------------------------
+NAMESPACE   INGRESS   CLASS   HOSTS   IPS   HOSTNAMES
+
+-------------------------------------------------------------------------------------------
+| 11. SERVICE NODE PORTS - qa-cluster-02:qa-cluster-02                                    |
+-------------------------------------------------------------------------------------------
+NAMESPACE            SERVICE                  TYPE        PORTS        NODEPORTS   PROTOCOLS
+default              kubernetes               ClusterIP   443          <none>      TCP
+default              supervisor               ClusterIP   6443         <none>      TCP
+kube-system          antrea                   ClusterIP   443          <none>      TCP
+kube-system          kube-dns                 ClusterIP   53,53,9153   <none>      UDP,TCP,TCP
+kube-system          metrics-server           ClusterIP   443          <none>      TCP
+tkg-system           packaging-api            ClusterIP   443,8080     <none>      TCP,TCP
+vmware-system-csi    vsphere-csi-controller   ClusterIP   2112,2113    <none>      TCP,TCP
+vmware-system-helm   source-controller        ClusterIP   80           <none>      TCP
+
+-------------------------------------------------------------------------------------------
+| 12.1 NAMESPACE IP REPORT - default - qa-cluster-02:qa-cluster-02                        |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 0
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 0
+Active pods without an assigned IP: 0
+Services: 2
+Distinct service ClusterIPs: 1
+Headless services: 1
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+No pods returned.
+
+SERVICES AND PORTS
+SERVICE     TYPE       CLUSTER-IPS  EXTERNAL-IPS  EXTERNAL-NAME  PORT  TARGET  PROTOCOL  NODEPORT
+kubernetes  ClusterIP  10.96.0.1    <none>        <none>         443   6443    TCP       <none>
+supervisor  ClusterIP  None         <none>        <none>         6443  6443    TCP       <none>
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE      SLICE              TYPE   ADDRESSES                          READY-ADDRESSES                    NOT-READY-ADDRESSES   PORTS
+kubernetes   kubernetes         IPv4   172.30.0.2,172.30.0.6,172.30.0.7   172.30.0.2,172.30.0.6,172.30.0.7   <none>                6443
+supervisor   supervisor-88kdh   IPv4   10.55.16.4                         10.55.16.4                         <none>                6443
+
+-------------------------------------------------------------------------------------------
+| 12.2 NAMESPACE IP REPORT - flow-aggregator - qa-cluster-02:qa-cluster-02                |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 0
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 0
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+No pods returned.
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| 12.3 NAMESPACE IP REPORT - kube-node-lease - qa-cluster-02:qa-cluster-02                |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 0
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 0
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+No pods returned.
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| 12.4 NAMESPACE IP REPORT - kube-public - qa-cluster-02:qa-cluster-02                    |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 0
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 0
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+No pods returned.
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| 12.5 NAMESPACE IP REPORT - kube-system - qa-cluster-02:qa-cluster-02                    |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 29
+Active non-host-network pods: 4
+Distinct active pod IPs: 4
+Active host-network pods (share node addresses): 25
+Active pods without an assigned IP: 0
+Services: 3
+Distinct service ClusterIPs: 3
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+Node: qa-cluster-02-6xqsg-vn2nz
+  Pod CIDRs: 10.95.0.0/24
+  Namespace pods: 4; distinct observed IPs: 4
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+POD                                                PHASE    HOST-NETWORK  POD-IPS     NODE
+antrea-agent-4lfq6                                 Running  true          172.30.0.5  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-w2cpx
+antrea-agent-6nv4q                                 Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+antrea-agent-6s2kd                                 Running  true          172.30.0.7  qa-cluster-02-6xqsg-bdl97
+antrea-agent-d95tc                                 Running  true          172.30.0.6  qa-cluster-02-6xqsg-b5dqg
+antrea-agent-mjkj5                                 Running  true          172.30.0.3  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-vs9qj
+antrea-agent-rk2tx                                 Running  true          172.30.0.4  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-p5ccn
+antrea-controller-755b8d6dd6-4cd4l                 Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+coredns-74754687d6-cm596                           Running  false         10.95.0.9   qa-cluster-02-6xqsg-vn2nz
+coredns-74754687d6-zjk7b                           Running  false         10.95.0.10  qa-cluster-02-6xqsg-vn2nz
+etcd-qa-cluster-02-6xqsg-b5dqg                     Running  true          172.30.0.6  qa-cluster-02-6xqsg-b5dqg
+etcd-qa-cluster-02-6xqsg-bdl97                     Running  true          172.30.0.7  qa-cluster-02-6xqsg-bdl97
+etcd-qa-cluster-02-6xqsg-vn2nz                     Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+kube-apiserver-qa-cluster-02-6xqsg-b5dqg           Running  true          172.30.0.6  qa-cluster-02-6xqsg-b5dqg
+kube-apiserver-qa-cluster-02-6xqsg-bdl97           Running  true          172.30.0.7  qa-cluster-02-6xqsg-bdl97
+kube-apiserver-qa-cluster-02-6xqsg-vn2nz           Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+kube-controller-manager-qa-cluster-02-6xqsg-b5dqg  Running  true          172.30.0.6  qa-cluster-02-6xqsg-b5dqg
+kube-controller-manager-qa-cluster-02-6xqsg-bdl97  Running  true          172.30.0.7  qa-cluster-02-6xqsg-bdl97
+kube-controller-manager-qa-cluster-02-6xqsg-vn2nz  Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+kube-proxy-67qfg                                   Running  true          172.30.0.5  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-w2cpx
+kube-proxy-7mg5d                                   Running  true          172.30.0.3  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-vs9qj
+kube-proxy-cj2h7                                   Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+kube-proxy-hpfqb                                   Running  true          172.30.0.6  qa-cluster-02-6xqsg-b5dqg
+kube-proxy-p79s2                                   Running  true          172.30.0.4  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-p5ccn
+kube-proxy-vn8bj                                   Running  true          172.30.0.7  qa-cluster-02-6xqsg-bdl97
+kube-scheduler-qa-cluster-02-6xqsg-b5dqg           Running  true          172.30.0.6  qa-cluster-02-6xqsg-b5dqg
+kube-scheduler-qa-cluster-02-6xqsg-bdl97           Running  true          172.30.0.7  qa-cluster-02-6xqsg-bdl97
+kube-scheduler-qa-cluster-02-6xqsg-vn2nz           Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+metrics-server-5544fcbcd5-zl6vc                    Running  false         10.95.0.6   qa-cluster-02-6xqsg-vn2nz
+snapshot-controller-6dfdb5b8bc-gh2xp               Running  false         10.95.0.3   qa-cluster-02-6xqsg-vn2nz
+
+SERVICES AND PORTS
+SERVICE         TYPE       CLUSTER-IPS    EXTERNAL-IPS  EXTERNAL-NAME  PORT  TARGET  PROTOCOL  NODEPORT
+antrea          ClusterIP  10.98.129.100  <none>        <none>         443   api     TCP       <none>
+kube-dns        ClusterIP  10.96.0.10     <none>        <none>         53    53      UDP       <none>
+kube-dns        ClusterIP  10.96.0.10     <none>        <none>         53    53      TCP       <none>
+kube-dns        ClusterIP  10.96.0.10     <none>        <none>         9153  9153    TCP       <none>
+metrics-server  ClusterIP  10.105.23.232  <none>        <none>         443   https   TCP       <none>
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE          SLICE                  TYPE   ADDRESSES              READY-ADDRESSES        NOT-READY-ADDRESSES   PORTS
+antrea           antrea-s2dk8           IPv4   172.30.0.2             172.30.0.2             <none>                10349
+kube-dns         kube-dns-mdrpq         IPv4   10.95.0.9,10.95.0.10   10.95.0.9,10.95.0.10   <none>                53,53,9153
+metrics-server   metrics-server-hwkxl   IPv4   10.95.0.6              10.95.0.6              <none>                4443
+
+-------------------------------------------------------------------------------------------
+| 12.6 NAMESPACE IP REPORT - secretgen-controller - qa-cluster-02:qa-cluster-02           |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 1
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 1
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+POD                                    PHASE    HOST-NETWORK  POD-IPS     NODE
+secretgen-controller-768b5b96cb-2g2h9  Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| 12.7 NAMESPACE IP REPORT - tkg-system - qa-cluster-02:qa-cluster-02                     |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 1
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 1
+Active pods without an assigned IP: 0
+Services: 1
+Distinct service ClusterIPs: 1
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+POD                               PHASE    HOST-NETWORK  POD-IPS     NODE
+kapp-controller-756d7c644b-9wcbb  Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+
+SERVICES AND PORTS
+SERVICE        TYPE       CLUSTER-IPS    EXTERNAL-IPS  EXTERNAL-NAME  PORT  TARGET   PROTOCOL  NODEPORT
+packaging-api  ClusterIP  10.109.135.20  <none>        <none>         443   api      TCP       <none>
+packaging-api  ClusterIP  10.109.135.20  <none>        <none>         8080  metrics  TCP       <none>
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE         SLICE                 TYPE   ADDRESSES    READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+packaging-api   packaging-api-zp7sr   IPv4   172.30.0.2   172.30.0.2        <none>                8080,10100
+
+-------------------------------------------------------------------------------------------
+| 12.8 NAMESPACE IP REPORT - velero-vsphere-plugin-backupdriver -                         |
+| qa-cluster-02:qa-cluster-02                                                             |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 0
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 0
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+No pods returned.
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| 12.9 NAMESPACE IP REPORT - vmware-system-antrea - qa-cluster-02:qa-cluster-02           |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 0
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 0
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+No pods returned.
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| 12.10 NAMESPACE IP REPORT - vmware-system-auth - qa-cluster-02:qa-cluster-02            |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 3
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 3
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+POD                           PHASE    HOST-NETWORK  POD-IPS     NODE
+guest-cluster-auth-svc-dpf95  Running  true          172.30.0.6  qa-cluster-02-6xqsg-b5dqg
+guest-cluster-auth-svc-q6ttm  Running  true          172.30.0.7  qa-cluster-02-6xqsg-bdl97
+guest-cluster-auth-svc-xr5vt  Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| 12.11 NAMESPACE IP REPORT - vmware-system-cloud-provider - qa-cluster-02:qa-cluster-02  |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 1
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 1
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+POD                                            PHASE    HOST-NETWORK  POD-IPS     NODE
+guest-cluster-cloud-provider-7d4978b899-45pjg  Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| 12.12 NAMESPACE IP REPORT - vmware-system-csi - qa-cluster-02:qa-cluster-02             |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 7
+Active non-host-network pods: 1
+Distinct active pod IPs: 1
+Active host-network pods (share node addresses): 6
+Active pods without an assigned IP: 0
+Services: 1
+Distinct service ClusterIPs: 1
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+Node: qa-cluster-02-6xqsg-vn2nz
+  Pod CIDRs: 10.95.0.0/24
+  Namespace pods: 1; distinct observed IPs: 1
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+POD                                     PHASE    HOST-NETWORK  POD-IPS     NODE
+vsphere-csi-controller-86c9557c9-gs29l  Running  false         10.95.0.7   qa-cluster-02-6xqsg-vn2nz
+vsphere-csi-node-9htzb                  Running  true          172.30.0.6  qa-cluster-02-6xqsg-b5dqg
+vsphere-csi-node-hxpnl                  Running  true          172.30.0.4  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-p5ccn
+vsphere-csi-node-kbfkg                  Running  true          172.30.0.5  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-w2cpx
+vsphere-csi-node-llnpb                  Running  true          172.30.0.3  qa-cluster-02-qa-cluster-02-np01-tpxj2-ccf46-vs9qj
+vsphere-csi-node-ng4hc                  Running  true          172.30.0.7  qa-cluster-02-6xqsg-bdl97
+vsphere-csi-node-smlkc                  Running  true          172.30.0.2  qa-cluster-02-6xqsg-vn2nz
+
+SERVICES AND PORTS
+SERVICE                 TYPE       CLUSTER-IPS    EXTERNAL-IPS  EXTERNAL-NAME  PORT  TARGET  PROTOCOL  NODEPORT
+vsphere-csi-controller  ClusterIP  10.107.143.13  <none>        <none>         2112  2112    TCP       <none>
+vsphere-csi-controller  ClusterIP  10.107.143.13  <none>        <none>         2113  2113    TCP       <none>
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE                  SLICE                          TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+vsphere-csi-controller   vsphere-csi-controller-r6x4s   IPv4   10.95.0.7   10.95.0.7         <none>                2112,2113
+
+-------------------------------------------------------------------------------------------
+| 12.13 NAMESPACE IP REPORT - vmware-system-helm - qa-cluster-02:qa-cluster-02            |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 2
+Active non-host-network pods: 2
+Distinct active pod IPs: 2
+Active host-network pods (share node addresses): 0
+Active pods without an assigned IP: 0
+Services: 1
+Distinct service ClusterIPs: 1
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+Node: qa-cluster-02-6xqsg-vn2nz
+  Pod CIDRs: 10.95.0.0/24
+  Namespace pods: 2; distinct observed IPs: 2
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+POD                                PHASE    HOST-NETWORK  POD-IPS    NODE
+helm-controller-6b89f9598-mggcw    Running  false         10.95.0.5  qa-cluster-02-6xqsg-vn2nz
+source-controller-db98cfb7b-cn2pp  Running  false         10.95.0.8  qa-cluster-02-6xqsg-vn2nz
+
+SERVICES AND PORTS
+SERVICE            TYPE       CLUSTER-IPS   EXTERNAL-IPS  EXTERNAL-NAME  PORT  TARGET  PROTOCOL  NODEPORT
+source-controller  ClusterIP  10.98.223.21  <none>        <none>         80    http    TCP       <none>
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE             SLICE                     TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+source-controller   source-controller-nhpmd   IPv4   10.95.0.8   10.95.0.8         <none>                9090
+
+-------------------------------------------------------------------------------------------
+| 12.14 NAMESPACE IP REPORT - vmware-system-tkg - qa-cluster-02:qa-cluster-02             |
+-------------------------------------------------------------------------------------------
+
+IP USAGE SUMMARY
+Pods returned: 0
+Active non-host-network pods: 0
+Distinct active pod IPs: 0
+Active host-network pods (share node addresses): 0
+Active pods without an assigned IP: 0
+Services: 0
+Distinct service ClusterIPs: 0
+Headless services: 0
+LoadBalancer services: 0
+Distinct assigned LB IPs: 0
+Distinct assigned LB hostnames: 0
+LB services without a published address: 0
+Ingress objects: 0
+Distinct ingress IPs: 0
+Distinct ingress hostnames: 0
+
+CIDR USAGE CONTEXT
+Shared cluster service CIDRs: 10.96.0.0/12
+Node pod CIDRs are shared across namespaces; these are placement associations, not reserved namespace ranges.
+Counts exclude host-network and terminal pods. Addresses are observed, not a free-IP or utilization estimate.
+No active non-host-network pods assigned to nodes.
+LB and ingress addresses may be shared; their backing pool CIDRs are not exposed by these objects.
+
+POD IP ADDRESSES
+No pods returned.
+
+SERVICES AND PORTS
+No services returned.
+
+LOAD BALANCERS
+No LoadBalancer services returned.
+
+INGRESS ROUTES
+No ingress objects returned.
+
+SERVICE ENDPOINTS
+SERVICE   SLICE   TYPE   ADDRESSES   READY-ADDRESSES   NOT-READY-ADDRESSES   PORTS
+
+-------------------------------------------------------------------------------------------
+| FINAL RESULT - qa-cluster-02:qa-cluster-02                                              |
+-------------------------------------------------------------------------------------------
+Collection status  : Completed
+Writes attempted   : 0

@@ -1,0 +1,32 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: istio-gateway
+  namespace: istio-gateway
+spec:
+  gatewayClassName: istio
+  # Request a specific LoadBalancer IP address
+  addresses:
+    - type: IPAddress
+      value: 10.55.16.104
+  listeners:
+    # HTTP listener
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    # HTTPS listener with wildcard TLS certificate
+    - name: https
+      hostname: "*.platformlab.vcf"
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: platformlab-wildcard-tls
+      allowedRoutes:
+        namespaces:
+          from: All

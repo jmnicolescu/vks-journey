@@ -1,0 +1,19 @@
+apiVersion: addons.kubernetes.vmware.com/v1alpha1
+kind: AddonInstall
+metadata:
+  name: cert-manager-dev-cluster-01
+  namespace: dev-namespace
+spec:
+  addonRef:
+    name: cert-manager
+  addonConfigNameTemplate: dev-cluster-01-cert-manager
+  releaseFilter:
+    ref:
+      name: cert-manager.kubernetes.vmware.com.1.20.2-vmware.1-vks.1
+      namespace: vmware-system-vks-public
+  clusters:
+    - selector:
+        matchLabels:
+          cluster.x-k8s.io/cluster-name: dev-cluster-01
+  crossNamespaceSelection: Blocked
+  stopMatchingBehavior: Delete

@@ -1,0 +1,595 @@
+Application namespace: qa-mongodb-contour | Cluster: qa-cluster-02 | Captured: 
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl config use-context qa-cluster-02:qa-cluster-02                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Switched to context "qa-cluster-02:qa-cluster-02".
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get namespace qa-mongodb-contour --show-labels                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                 STATUS   AGE     LABELS
+qa-mongodb-contour   Active   8m35s   kubernetes.io/metadata.name=qa-mongodb-contour,pod-security.kubernetes.io/audit=privileged,pod-security.kubernetes.io/enforce=privileged,pod-security.kubernetes.io/warn=privileged
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get all -n qa-mongodb-contour -o wide                                                                                                          |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                                            READY   STATUS    RESTARTS   AGE     IP           NODE                                                 NOMINATED NODE   READINESS GATES
+pod/mongo-express-deployment-579ddc468f-flhfb   1/1     Running   0          8m20s   10.95.2.30   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6   <none>           <none>
+pod/mongo-express-deployment-579ddc468f-zswdd   1/1     Running   0          8m20s   10.95.4.35   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-f97bd   <none>           <none>
+pod/mongodb-deployment-66884df997-pz9mg         1/1     Running   0          8m34s   10.95.2.29   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6   <none>           <none>
+
+NAME                            TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)     AGE     SELECTOR
+service/mongo-express-service   ClusterIP   10.110.109.226   <none>        8081/TCP    8m20s   app=mongo-express
+service/mongodb-service         ClusterIP   10.100.180.176   <none>        27017/TCP   8m34s   app=mongodb
+
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS      IMAGES                SELECTOR
+deployment.apps/mongo-express-deployment   2/2     2            2           8m20s   mongo-express   mongo-express:1.0.2   app=mongo-express
+deployment.apps/mongodb-deployment         1/1     1            1           8m35s   mongodb         mongo:8.0             app=mongodb
+
+NAME                                                  DESIRED   CURRENT   READY   AGE     CONTAINERS      IMAGES                SELECTOR
+replicaset.apps/mongo-express-deployment-579ddc468f   2         2         2       8m20s   mongo-express   mongo-express:1.0.2   app=mongo-express,pod-template-hash=579ddc468f
+replicaset.apps/mongodb-deployment-66884df997         1         1         1       8m35s   mongodb         mongo:8.0             app=mongodb,pod-template-hash=66884df997
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get pods -n qa-mongodb-contour -o custom-columns='POD:.metadata.name,IMAGES:.spec.containers[*].image'                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+POD                                         IMAGES
+mongo-express-deployment-579ddc468f-flhfb   mongo-express:1.0.2
+mongo-express-deployment-579ddc468f-zswdd   mongo-express:1.0.2
+mongodb-deployment-66884df997-pz9mg         mongo:8.0
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get endpointslices -n qa-mongodb-contour -o wide                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                          ADDRESSTYPE   PORTS   ENDPOINTS               AGE
+mongo-express-service-w2rqn   IPv4          8081    10.95.2.30,10.95.4.35   8m20s
+mongodb-service-m525j         IPv4          27017   10.95.2.29              8m34s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gatewayclass                                                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME      CONTROLLER                             ACCEPTED   AGE
+contour   projectcontour.io/gateway-controller   Unknown    24m
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gateways -A                                                                                                                                |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAMESPACE              NAME              CLASS     ADDRESS        PROGRAMMED   AGE
+tanzu-system-ingress   contour-gateway   contour   10.55.16.103   True         24m
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gateways -A -o yaml                                                                                                                        |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+apiVersion: v1
+items:
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: Gateway
+  metadata:
+    creationTimestamp: "2026-11-18T16:12:41Z"
+    generation: 2
+    name: contour-gateway
+    namespace: tanzu-system-ingress
+    resourceVersion: "902937"
+    uid: a26a81d3-6406-4f41-becb-ab33ea96c89c
+  spec:
+    gatewayClassName: contour
+    listeners:
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: qa-assembly-contour.platformlab.vcf
+      name: http
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: qa-mongo-express-contour.platformlab.vcf
+      name: http-mongo-express
+      port: 80
+      protocol: HTTP
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: qa-assembly-contour.platformlab.vcf
+      name: https
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+        - group: ""
+          kind: Secret
+          name: assembly-tls
+        mode: Terminate
+    - allowedRoutes:
+        namespaces:
+          from: All
+      hostname: qa-mongo-express-contour.platformlab.vcf
+      name: https-mongo-express
+      port: 443
+      protocol: HTTPS
+      tls:
+        certificateRefs:
+        - group: ""
+          kind: Secret
+          name: mongo-express-tls
+        mode: Terminate
+  status:
+    addresses:
+    - type: IPAddress
+      value: 10.55.16.103
+    conditions:
+    - lastTransitionTime: "2026-11-18T16:36:37Z"
+      message: Gateway is accepted
+      observedGeneration: 2
+      reason: Accepted
+      status: "True"
+      type: Accepted
+    - lastTransitionTime: "2026-11-18T16:36:37Z"
+      message: Valid Gateway
+      observedGeneration: 2
+      reason: Programmed
+      status: "True"
+      type: Programmed
+    listeners:
+    - attachedRoutes: 2
+      conditions:
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Valid listener
+        observedGeneration: 2
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Listener accepted
+        observedGeneration: 2
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Listener references resolved
+        observedGeneration: 2
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: http
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+    - attachedRoutes: 1
+      conditions:
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Valid listener
+        observedGeneration: 2
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Listener accepted
+        observedGeneration: 2
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Listener references resolved
+        observedGeneration: 2
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: http-mongo-express
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+    - attachedRoutes: 2
+      conditions:
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Valid listener
+        observedGeneration: 2
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Listener accepted
+        observedGeneration: 2
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Listener references resolved
+        observedGeneration: 2
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: https
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+    - attachedRoutes: 1
+      conditions:
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Valid listener
+        observedGeneration: 2
+        reason: Programmed
+        status: "True"
+        type: Programmed
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Listener accepted
+        observedGeneration: 2
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Listener references resolved
+        observedGeneration: 2
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      name: https-mongo-express
+      supportedKinds:
+      - group: gateway.networking.k8s.io
+        kind: HTTPRoute
+      - group: gateway.networking.k8s.io
+        kind: GRPCRoute
+kind: List
+metadata:
+  resourceVersion: ""
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Gateway listener summary: tanzu-system-ingress/contour-gateway                                                                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+LISTENER             PROTOCOL  PORT  HOSTNAME                                  CERTIFICATE_SECRET                      ACCEPTED  PROGRAMMED  RESOLVED_REFS
+http                 HTTP      80    qa-assembly-contour.platformlab.vcf       -                                       True      True        True
+http-mongo-express   HTTP      80    qa-mongo-express-contour.platformlab.vcf  -                                       True      True        True
+https                HTTPS     443   qa-assembly-contour.platformlab.vcf       tanzu-system-ingress/assembly-tls       True      True        True
+https-mongo-express  HTTPS     443   qa-mongo-express-contour.platformlab.vcf  tanzu-system-ingress/mongo-express-tls  True      True        True
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Gateway configuration: listener, hostname, protocol, port, TLS mode and certificate Secrets                                                            |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+{
+  "namespace": "tanzu-system-ingress",
+  "gateway": "contour-gateway",
+  "gatewayClass": "contour",
+  "listeners": [
+    {
+      "name": "http",
+      "hostname": "qa-assembly-contour.platformlab.vcf",
+      "protocol": "HTTP",
+      "port": 80,
+      "tlsMode": null,
+      "certificates": []
+    },
+    {
+      "name": "http-mongo-express",
+      "hostname": "qa-mongo-express-contour.platformlab.vcf",
+      "protocol": "HTTP",
+      "port": 80,
+      "tlsMode": null,
+      "certificates": []
+    },
+    {
+      "name": "https",
+      "hostname": "qa-assembly-contour.platformlab.vcf",
+      "protocol": "HTTPS",
+      "port": 443,
+      "tlsMode": "Terminate",
+      "certificates": [
+        {
+          "group": "",
+          "kind": "Secret",
+          "namespace": "tanzu-system-ingress",
+          "name": "assembly-tls"
+        }
+      ]
+    },
+    {
+      "name": "https-mongo-express",
+      "hostname": "qa-mongo-express-contour.platformlab.vcf",
+      "protocol": "HTTPS",
+      "port": 443,
+      "tlsMode": "Terminate",
+      "certificates": [
+        {
+          "group": "",
+          "kind": "Secret",
+          "namespace": "tanzu-system-ingress",
+          "name": "mongo-express-tls"
+        }
+      ]
+    }
+  ]
+}
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get secret assembly-tls -n tanzu-system-ingress                                                                                                |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME           TYPE                DATA   AGE
+assembly-tls   kubernetes.io/tls   2      14s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Public TLS certificate: tanzu-system-ingress/assembly-tls (tls.crt)                                                                                    |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+subject=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=Digital Technology, CN=qa-assembly-contour.platformlab.vcf
+issuer=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=PRIVATE CA, CN=CA.platformlab.vcf
+notBefore=Nov 17 10:18:04 2026 GMT
+notAfter=Nov 14 10:18:04 2036 GMT
+X509v3 Subject Alternative Name: 
+    DNS:qa-assembly-contour.platformlab.vcf
+sha256 Fingerprint=AB:FA:AD:82:65:6C:B2:DC:08:3F:1B:05:74:7E:DB:49:07:5D:30:9A:F2:88:81:55:BA:92:CA:4C:68:D6:56:6A
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get secret mongo-express-tls -n tanzu-system-ingress                                                                                           |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                TYPE                DATA   AGE
+mongo-express-tls   kubernetes.io/tls   2      14s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Public TLS certificate: tanzu-system-ingress/mongo-express-tls (tls.crt)                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+subject=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=Digital Technology, CN=qa-mongo-express-contour.platformlab.vcf
+issuer=C=GB, ST=Greater London, L=London, O=PLATFORMLAB, OU=PRIVATE CA, CN=CA.platformlab.vcf
+notBefore=Nov 17 10:18:07 2026 GMT
+notAfter=Nov 14 10:18:07 2036 GMT
+X509v3 Subject Alternative Name: 
+    DNS:qa-mongo-express-contour.platformlab.vcf
+sha256 Fingerprint=AA:A5:1B:F8:20:01:09:D1:5F:7D:A9:3D:98:56:7D:61:FA:44:8B:59:27:EF:21:B6:BC:F4:CE:18:23:DA:C2:DB
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get gateways -A -o json | jq (namespace, gateway, listeners and conditions)                                                                    |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+{
+  "namespace": "tanzu-system-ingress",
+  "gateway": "contour-gateway",
+  "listeners": [
+    {
+      "name": "http",
+      "attachedRoutes": 2,
+      "conditions": [
+        {
+          "type": "Programmed",
+          "status": "True",
+          "reason": "Programmed"
+        },
+        {
+          "type": "Accepted",
+          "status": "True",
+          "reason": "Accepted"
+        },
+        {
+          "type": "ResolvedRefs",
+          "status": "True",
+          "reason": "ResolvedRefs"
+        }
+      ]
+    },
+    {
+      "name": "http-mongo-express",
+      "attachedRoutes": 1,
+      "conditions": [
+        {
+          "type": "Programmed",
+          "status": "True",
+          "reason": "Programmed"
+        },
+        {
+          "type": "Accepted",
+          "status": "True",
+          "reason": "Accepted"
+        },
+        {
+          "type": "ResolvedRefs",
+          "status": "True",
+          "reason": "ResolvedRefs"
+        }
+      ]
+    },
+    {
+      "name": "https",
+      "attachedRoutes": 2,
+      "conditions": [
+        {
+          "type": "Programmed",
+          "status": "True",
+          "reason": "Programmed"
+        },
+        {
+          "type": "Accepted",
+          "status": "True",
+          "reason": "Accepted"
+        },
+        {
+          "type": "ResolvedRefs",
+          "status": "True",
+          "reason": "ResolvedRefs"
+        }
+      ]
+    },
+    {
+      "name": "https-mongo-express",
+      "attachedRoutes": 1,
+      "conditions": [
+        {
+          "type": "Programmed",
+          "status": "True",
+          "reason": "Programmed"
+        },
+        {
+          "type": "Accepted",
+          "status": "True",
+          "reason": "Accepted"
+        },
+        {
+          "type": "ResolvedRefs",
+          "status": "True",
+          "reason": "ResolvedRefs"
+        }
+      ]
+    }
+  ]
+}
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get httproutes -n qa-mongodb-contour                                                                                                           |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                          HOSTNAMES                                      AGE
+mongo-express-http-redirect   ["qa-mongo-express-contour.platformlab.vcf"]   8m21s
+mongo-express-httproute       ["qa-mongo-express-contour.platformlab.vcf"]   8m21s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get httproutes -n qa-mongodb-contour -o yaml                                                                                                   |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+apiVersion: v1
+items:
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: HTTPRoute
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"mongo-express-http-redirect","namespace":"qa-mongodb-contour"},"spec":{"hostnames":["qa-mongo-express-contour.platformlab.vcf"],"parentRefs":[{"name":"contour-gateway","namespace":"tanzu-system-ingress","port":80}],"rules":[{"filters":[{"requestRedirect":{"port":443,"scheme":"https","statusCode":301},"type":"RequestRedirect"}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+    creationTimestamp: "2026-11-18T16:28:30Z"
+    generation: 1
+    name: mongo-express-http-redirect
+    namespace: qa-mongodb-contour
+    resourceVersion: "902936"
+    uid: 43cdc286-db14-42e4-9f9e-ac1aea598a2a
+  spec:
+    hostnames:
+    - qa-mongo-express-contour.platformlab.vcf
+    parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: contour-gateway
+      namespace: tanzu-system-ingress
+      port: 80
+    rules:
+    - filters:
+      - requestRedirect:
+          port: 443
+          scheme: https
+          statusCode: 301
+        type: RequestRedirect
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+  status:
+    parents:
+    - conditions:
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: References resolved
+        observedGeneration: 1
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      - lastTransitionTime: "2026-11-18T16:36:37Z"
+        message: Accepted HTTPRoute
+        observedGeneration: 1
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      controllerName: projectcontour.io/gateway-controller
+      parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: contour-gateway
+        namespace: tanzu-system-ingress
+        port: 80
+- apiVersion: gateway.networking.k8s.io/v1
+  kind: HTTPRoute
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"annotations":{},"name":"mongo-express-httproute","namespace":"qa-mongodb-contour"},"spec":{"hostnames":["qa-mongo-express-contour.platformlab.vcf"],"parentRefs":[{"name":"contour-gateway","namespace":"tanzu-system-ingress","port":443}],"rules":[{"backendRefs":[{"name":"mongo-express-service","port":8081}],"matches":[{"path":{"type":"PathPrefix","value":"/"}}]}]}}
+    creationTimestamp: "2026-11-18T16:28:30Z"
+    generation: 1
+    name: mongo-express-httproute
+    namespace: qa-mongodb-contour
+    resourceVersion: "900906"
+    uid: 5c5a80c4-b5c4-4cb7-8b4b-721dea20ab8f
+  spec:
+    hostnames:
+    - qa-mongo-express-contour.platformlab.vcf
+    parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: contour-gateway
+      namespace: tanzu-system-ingress
+      port: 443
+    rules:
+    - backendRefs:
+      - group: ""
+        kind: Service
+        name: mongo-express-service
+        port: 8081
+        weight: 1
+      matches:
+      - path:
+          type: PathPrefix
+          value: /
+  status:
+    parents:
+    - conditions:
+      - lastTransitionTime: "2026-11-18T16:28:30Z"
+        message: References resolved
+        observedGeneration: 1
+        reason: ResolvedRefs
+        status: "True"
+        type: ResolvedRefs
+      - lastTransitionTime: "2026-11-18T16:28:30Z"
+        message: Accepted HTTPRoute
+        observedGeneration: 1
+        reason: Accepted
+        status: "True"
+        type: Accepted
+      controllerName: projectcontour.io/gateway-controller
+      parentRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: contour-gateway
+        namespace: tanzu-system-ingress
+        port: 443
+kind: List
+metadata:
+  resourceVersion: ""
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get deployments,daemonsets,pods,services -n tanzu-system-ingress -o wide                                                                       |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                      READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS               IMAGES                                                                                                                                                                                                                                                                                                                                                SELECTOR
+deployment.apps/contour   2/2     2            2           26m   contour                  projects.packages.broadcom.com/vsphere/supervisor/vks-standard-packages/3.7.0-20260618/vks-addons@sha256:470dc8b03cee377a308a52429ea18cc77810b1d1b977863674c95b7d2a2a80ff                                                                                                                                                                             app=contour,kapp.k14s.io/app=1795018207361436951
+deployment.apps/envoy     2/2     2            2           26m   shutdown-manager,envoy   projects.packages.broadcom.com/vsphere/supervisor/vks-standard-packages/3.7.0-20260618/vks-addons@sha256:470dc8b03cee377a308a52429ea18cc77810b1d1b977863674c95b7d2a2a80ff,projects.packages.broadcom.com/vsphere/supervisor/vks-standard-packages/3.7.0-20260618/vks-addons@sha256:0931afa3ed8a012e66b28ed0af91ddbdfabe597a9baa099bf35c2989a71805ba   app=envoy,kapp.k14s.io/app=1795018207361436951
+
+NAME                           READY   STATUS    RESTARTS   AGE   IP           NODE                                                 NOMINATED NODE   READINESS GATES
+pod/contour-86f655d547-bm7bb   1/1     Running   0          26m   10.95.2.27   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6   <none>           <none>
+pod/contour-86f655d547-wpcfm   1/1     Running   0          26m   10.95.1.24   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-hgp9g   <none>           <none>
+pod/envoy-7bfc84c7fc-6rd78     2/2     Running   0          26m   10.95.4.33   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-f97bd   <none>           <none>
+pod/envoy-7bfc84c7fc-jbwhd     2/2     Running   0          26m   10.95.1.23   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-hgp9g   <none>           <none>
+
+NAME              TYPE           CLUSTER-IP      EXTERNAL-IP    PORT(S)                      AGE   SELECTOR
+service/contour   ClusterIP      10.99.255.148   <none>         8001/TCP                     26m   app=contour,kapp.k14s.io/app=1795018207361436951
+service/envoy     LoadBalancer   10.106.2.180    10.55.16.103   80:31727/TCP,443:30253/TCP   26m   app=envoy,kapp.k14s.io/app=1795018207361436951

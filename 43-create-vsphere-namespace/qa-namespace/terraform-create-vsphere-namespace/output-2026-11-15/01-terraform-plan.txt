@@ -1,0 +1,92 @@
+ephemeral.restful_resource.vcenter_session: Opening...
+data.vsphere_storage_policy.namespace["vSAN Default Storage Policy"]: Reading...
+data.vsphere_storage_policy.namespace["vSAN Default Storage Policy"]: Read complete after 0s [id=aa6d5a82-1c88-45da-85d3-3d74b91a5bad]
+ephemeral.restful_resource.vcenter_session: Opening complete after 5s
+data.restful_resource.supervisors: Reading...
+data.restful_resource.supervisors: Read complete after 0s [id=/api/vcenter/namespace-management/supervisors/summaries]
+ephemeral.restful_resource.vcenter_session: Closing...
+ephemeral.restful_resource.vcenter_session: Closing complete after 0s
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # restful_operation.namespace_storage_quota will be created
+  + resource "restful_operation" "namespace_storage_quota" {
+      + body             = {
+          + resource_spec = {
+              + cpu_limit             = 68110
+              + memory_limit          = 307200
+              + storage_request_limit = 512000
+            }
+          + storage_specs = [
+              + {
+                  + limit  = 512000
+                  + policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+                },
+            ]
+        }
+      + ephemeral_body   = (write-only attribute)
+      + id               = (known after apply)
+      + method           = "PATCH"
+      + output           = (known after apply)
+      + path             = "/api/vcenter/namespaces/instances/qa-namespace"
+      + sensitive_output = (sensitive value)
+    }
+
+  # restful_resource.namespace_access["[\"vsphere.local\",\"LabUsers\",\"GROUP\"]"] will be created
+  + resource "restful_resource" "namespace_access" {
+      + body             = {
+          + role = "VIEW"
+        }
+      + create_method    = "POST"
+      + delete_method    = "DELETE"
+      + ephemeral_body   = (write-only attribute)
+      + id               = (known after apply)
+      + output           = (known after apply)
+      + path             = "/api/vcenter/namespaces/instances/qa-namespace/access/vsphere.local/LabUsers"
+      + query            = {
+          + "type" = [
+              + "GROUP",
+            ]
+        }
+      + sensitive_output = (sensitive value)
+      + update_method    = "PUT"
+    }
+
+  # vsphere_namespace.namespace will be created
+  + resource "vsphere_namespace" "namespace" {
+      + id               = (known after apply)
+      + name             = "qa-namespace"
+      + storage_policies = [
+          + "aa6d5a82-1c88-45da-85d3-3d74b91a5bad",
+        ]
+      + supervisor       = "63b34a8b-0d3b-4d1a-9544-4ac6828e8fad"
+
+      + vm_service {
+          + content_libraries = []
+          + vm_classes        = [
+              + "best-effort-large",
+              + "best-effort-medium",
+              + "best-effort-small",
+              + "best-effort-xlarge",
+            ]
+        }
+    }
+
+Plan: 3 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + namespace_id       = (known after apply)
+  + namespace_name     = "qa-namespace"
+  + storage_policy_ids = [
+      + "aa6d5a82-1c88-45da-85d3-3d74b91a5bad",
+    ]
+  + supervisor_id      = "63b34a8b-0d3b-4d1a-9544-4ac6828e8fad"
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.

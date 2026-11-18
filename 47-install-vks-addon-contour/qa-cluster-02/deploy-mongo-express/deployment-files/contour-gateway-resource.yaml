@@ -1,0 +1,48 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: contour-gateway
+  namespace: tanzu-system-ingress
+spec:
+  gatewayClassName: contour
+  listeners:
+    - name: http
+      hostname: "qa-assembly-contour.platformlab.vcf"
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: http-mongo-express
+      hostname: "qa-mongo-express-contour.platformlab.vcf"
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      hostname: "qa-assembly-contour.platformlab.vcf"
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: assembly-tls
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https-mongo-express
+      hostname: "qa-mongo-express-contour.platformlab.vcf"
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - group: ""
+            kind: Secret
+            name: mongo-express-tls
+      allowedRoutes:
+        namespaces:
+          from: All

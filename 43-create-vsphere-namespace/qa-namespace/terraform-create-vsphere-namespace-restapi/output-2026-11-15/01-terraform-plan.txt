@@ -1,0 +1,146 @@
+ephemeral.restful_resource.vcenter_session: Opening...
+data.vsphere_datacenter.target: Reading...
+data.vsphere_storage_policy.namespace["vSAN Default Storage Policy"]: Reading...
+data.vsphere_datacenter.target: Read complete after 0s [id=datacenter-3]
+data.vsphere_compute_cluster.target: Reading...
+data.vsphere_storage_policy.namespace["vSAN Default Storage Policy"]: Read complete after 0s [id=aa6d5a82-1c88-45da-85d3-3d74b91a5bad]
+data.vsphere_compute_cluster.target: Read complete after 0s [id=domain-c9]
+ephemeral.restful_resource.vcenter_session: Opening complete after 5s
+ephemeral.restful_resource.vcenter_session: Closing...
+ephemeral.restful_resource.vcenter_session: Closing complete after 0s
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # restapi_object.namespace will be created
+  + resource "restapi_object" "namespace" {
+      + api_data                  = (known after apply)
+      + api_response              = (known after apply)
+      + create_method             = "POST"
+      + create_response           = (known after apply)
+      + data                      = jsonencode(
+            {
+              + access_list     = [
+                  + {
+                      + domain       = "vsphere.local"
+                      + role         = "VIEW"
+                      + subject      = "LabUsers"
+                      + subject_type = "GROUP"
+                    },
+                ]
+              + cluster         = "domain-c9"
+              + description     = "qa-namespace"
+              + namespace       = "qa-namespace"
+              + resource_spec   = {
+                  + cpu_limit             = 68110
+                  + memory_limit          = 307200
+                  + storage_request_limit = 512000
+                }
+              + storage_specs   = [
+                  + {
+                      + limit  = 512000
+                      + policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+                    },
+                ]
+              + vm_service_spec = {
+                  + vm_classes = [
+                      + "best-effort-small",
+                      + "best-effort-medium",
+                      + "best-effort-large",
+                      + "best-effort-xlarge",
+                    ]
+                }
+            }
+        )
+      + destroy_method            = "DELETE"
+      + force_new                 = [
+          + "namespace",
+          + "cluster",
+        ]
+      + id                        = (known after apply)
+      + id_attribute              = "namespace"
+      + ignore_all_server_changes = false
+      + object_id                 = "qa-namespace"
+      + path                      = "/api/vcenter/namespaces/instances"
+      + read_method               = "GET"
+      + update_data               = jsonencode(
+            {
+              + access_list     = [
+                  + {
+                      + domain       = "vsphere.local"
+                      + role         = "VIEW"
+                      + subject      = "LabUsers"
+                      + subject_type = "GROUP"
+                    },
+                ]
+              + description     = "qa-namespace"
+              + resource_spec   = {
+                  + cpu_limit             = 68110
+                  + memory_limit          = 307200
+                  + storage_request_limit = 512000
+                }
+              + storage_specs   = [
+                  + {
+                      + limit  = 512000
+                      + policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+                    },
+                ]
+              + vm_service_spec = {
+                  + vm_classes = [
+                      + "best-effort-small",
+                      + "best-effort-medium",
+                      + "best-effort-large",
+                      + "best-effort-xlarge",
+                    ]
+                }
+            }
+        )
+      + update_method             = "PATCH"
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + cluster_id     = "domain-c9"
+  + config_status  = (known after apply)
+  + create_spec    = {
+      + access_list     = [
+          + {
+              + domain       = "vsphere.local"
+              + role         = "VIEW"
+              + subject      = "LabUsers"
+              + subject_type = "GROUP"
+            },
+        ]
+      + cluster         = "domain-c9"
+      + description     = "qa-namespace"
+      + namespace       = "qa-namespace"
+      + resource_spec   = {
+          + cpu_limit             = 68110
+          + memory_limit          = 307200
+          + storage_request_limit = 512000
+        }
+      + storage_specs   = [
+          + {
+              + limit  = 512000
+              + policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+            },
+        ]
+      + vm_service_spec = {
+          + vm_classes = [
+              + "best-effort-small",
+              + "best-effort-medium",
+              + "best-effort-large",
+              + "best-effort-xlarge",
+            ]
+        }
+    }
+  + namespace_name = (known after apply)
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.

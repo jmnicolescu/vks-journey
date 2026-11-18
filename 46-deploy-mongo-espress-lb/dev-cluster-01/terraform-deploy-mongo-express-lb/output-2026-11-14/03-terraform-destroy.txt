@@ -1,0 +1,642 @@
+kubernetes_namespace_v1.mongodb: Refreshing state... [id=dev-mongodb-lb]
+kubernetes_persistent_volume_claim_v1.mongodb: Refreshing state... [id=dev-mongodb-lb/mongodb-pvc]
+kubernetes_secret_v1.mongodb: Refreshing state... [id=dev-mongodb-lb/mongodb-secret]
+kubernetes_service_v1.mongodb: Refreshing state... [id=dev-mongodb-lb/mongodb-service]
+kubernetes_service_v1.mongo_express: Refreshing state... [id=dev-mongodb-lb/mongo-express-service]
+kubernetes_config_map_v1.mongodb: Refreshing state... [id=dev-mongodb-lb/mongodb-configmap]
+kubernetes_deployment_v1.mongodb: Refreshing state... [id=dev-mongodb-lb/mongodb-deployment]
+kubernetes_deployment_v1.mongo_express: Refreshing state... [id=dev-mongodb-lb/mongo-express-deployment]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # kubernetes_config_map_v1.mongodb will be destroyed
+  - resource "kubernetes_config_map_v1" "mongodb" {
+      - binary_data = {} -> null
+      - data        = {
+          - "database_host" = "mongodb-service"
+          - "database_port" = "27017"
+          - "database_uri"  = "mongodb://mongodb-service:27017"
+          - "database_url"  = "mongodb-service"
+        } -> null
+      - id          = "dev-mongodb-lb/mongodb-configmap" -> null
+      - immutable   = false -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 0 -> null
+          - labels           = {} -> null
+          - name             = "mongodb-configmap" -> null
+          - namespace        = "dev-mongodb-lb" -> null
+          - resource_version = "570967" -> null
+          - uid              = "3a22363a-4e7c-407e-9d99-19934eb14dcc" -> null
+            # (1 unchanged attribute hidden)
+        }
+    }
+
+  # kubernetes_deployment_v1.mongo_express will be destroyed
+  - resource "kubernetes_deployment_v1" "mongo_express" {
+      - id               = "dev-mongodb-lb/mongo-express-deployment" -> null
+      - wait_for_rollout = true -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 1 -> null
+          - labels           = {
+              - "app" = "mongo-express"
+            } -> null
+          - name             = "mongo-express-deployment" -> null
+          - namespace        = "dev-mongodb-lb" -> null
+          - resource_version = "571192" -> null
+          - uid              = "99eef2c2-a419-46bd-b38f-2813ca631df3" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - spec {
+          - min_ready_seconds         = 0 -> null
+          - paused                    = false -> null
+          - progress_deadline_seconds = 600 -> null
+          - replicas                  = "2" -> null
+          - revision_history_limit    = 10 -> null
+
+          - selector {
+              - match_labels = {
+                  - "app" = "mongo-express"
+                } -> null
+            }
+
+          - strategy {
+              - type = "RollingUpdate" -> null
+
+              - rolling_update {
+                  - max_surge       = "25%" -> null
+                  - max_unavailable = "25%" -> null
+                }
+            }
+
+          - template {
+              - metadata {
+                  - annotations      = {} -> null
+                  - generation       = 0 -> null
+                  - labels           = {
+                      - "app" = "mongo-express"
+                    } -> null
+                    name             = null
+                    # (4 unchanged attributes hidden)
+                }
+              - spec {
+                  - active_deadline_seconds          = 0 -> null
+                  - automount_service_account_token  = true -> null
+                  - dns_policy                       = "ClusterFirst" -> null
+                  - enable_service_links             = true -> null
+                  - host_ipc                         = false -> null
+                  - host_network                     = false -> null
+                  - host_pid                         = false -> null
+                  - node_selector                    = {} -> null
+                  - restart_policy                   = "Always" -> null
+                  - scheduler_name                   = "default-scheduler" -> null
+                  - share_process_namespace          = false -> null
+                  - termination_grace_period_seconds = 30 -> null
+                    # (6 unchanged attributes hidden)
+
+                  - container {
+                      - args                       = [] -> null
+                      - command                    = [] -> null
+                      - image                      = "mongo-express:1.0.2-20-alpine3.19" -> null
+                      - image_pull_policy          = "IfNotPresent" -> null
+                      - name                       = "mongo-express" -> null
+                      - stdin                      = false -> null
+                      - stdin_once                 = false -> null
+                      - termination_message_path   = "/dev/termination-log" -> null
+                      - termination_message_policy = "File" -> null
+                      - tty                        = false -> null
+                        # (2 unchanged attributes hidden)
+
+                      - env {
+                          - name  = "ME_CONFIG_MONGODB_ADMINUSERNAME" -> null
+                            # (1 unchanged attribute hidden)
+
+                          - value_from {
+                              - secret_key_ref {
+                                  - key      = "mongo-root-username" -> null
+                                  - name     = "mongodb-secret" -> null
+                                  - optional = false -> null
+                                }
+                            }
+                        }
+                      - env {
+                          - name  = "ME_CONFIG_MONGODB_ADMINPASSWORD" -> null
+                            # (1 unchanged attribute hidden)
+
+                          - value_from {
+                              - secret_key_ref {
+                                  - key      = "mongo-root-password" -> null
+                                  - name     = "mongodb-secret" -> null
+                                  - optional = false -> null
+                                }
+                            }
+                        }
+                      - env {
+                          - name  = "ME_CONFIG_MONGODB_SERVER" -> null
+                            # (1 unchanged attribute hidden)
+
+                          - value_from {
+                              - config_map_key_ref {
+                                  - key      = "database_url" -> null
+                                  - name     = "mongodb-configmap" -> null
+                                  - optional = false -> null
+                                }
+                            }
+                        }
+                      - env {
+                          - name  = "ME_CONFIG_MONGODB_PORT" -> null
+                          - value = "27017" -> null
+                        }
+                      - env {
+                          - name  = "ME_CONFIG_MONGODB_ENABLE_ADMIN" -> null
+                          - value = "true" -> null
+                        }
+                      - env {
+                          - name  = "ME_CONFIG_BASICAUTH" -> null
+                          - value = "true" -> null
+                        }
+                      - env {
+                          - name  = "ME_CONFIG_BASICAUTH_USERNAME" -> null
+                          - value = "admin" -> null
+                        }
+                      - env {
+                          - name  = "ME_CONFIG_BASICAUTH_PASSWORD" -> null
+                            # (1 unchanged attribute hidden)
+
+                          - value_from {
+                              - secret_key_ref {
+                                  - key      = "mongo-express-password" -> null
+                                  - name     = "mongodb-secret" -> null
+                                  - optional = false -> null
+                                }
+                            }
+                        }
+
+                      - liveness_probe {
+                          - failure_threshold     = 3 -> null
+                          - initial_delay_seconds = 0 -> null
+                          - period_seconds        = 20 -> null
+                          - success_threshold     = 1 -> null
+                          - timeout_seconds       = 1 -> null
+
+                          - tcp_socket {
+                              - port = "http" -> null
+                            }
+                        }
+
+                      - port {
+                          - container_port = 8081 -> null
+                          - host_port      = 0 -> null
+                          - name           = "http" -> null
+                          - protocol       = "TCP" -> null
+                            # (1 unchanged attribute hidden)
+                        }
+
+                      - readiness_probe {
+                          - failure_threshold     = 3 -> null
+                          - initial_delay_seconds = 0 -> null
+                          - period_seconds        = 10 -> null
+                          - success_threshold     = 1 -> null
+                          - timeout_seconds       = 1 -> null
+
+                          - tcp_socket {
+                              - port = "http" -> null
+                            }
+                        }
+
+                      - resources {
+                          - limits   = {} -> null
+                          - requests = {} -> null
+                        }
+
+                      - startup_probe {
+                          - failure_threshold     = 30 -> null
+                          - initial_delay_seconds = 0 -> null
+                          - period_seconds        = 10 -> null
+                          - success_threshold     = 1 -> null
+                          - timeout_seconds       = 1 -> null
+
+                          - tcp_socket {
+                              - port = "http" -> null
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+      - timeouts {
+          - create = "5m" -> null
+          - update = "5m" -> null
+        }
+    }
+
+  # kubernetes_deployment_v1.mongodb will be destroyed
+  - resource "kubernetes_deployment_v1" "mongodb" {
+      - id               = "dev-mongodb-lb/mongodb-deployment" -> null
+      - wait_for_rollout = true -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 1 -> null
+          - labels           = {
+              - "app" = "mongodb"
+            } -> null
+          - name             = "mongodb-deployment" -> null
+          - namespace        = "dev-mongodb-lb" -> null
+          - resource_version = "571090" -> null
+          - uid              = "eee0f9cf-2dee-4364-9b86-01a0cb51216d" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - spec {
+          - min_ready_seconds         = 0 -> null
+          - paused                    = false -> null
+          - progress_deadline_seconds = 600 -> null
+          - replicas                  = "1" -> null
+          - revision_history_limit    = 10 -> null
+
+          - selector {
+              - match_labels = {
+                  - "app" = "mongodb"
+                } -> null
+            }
+
+          - strategy {
+              - type = "Recreate" -> null
+            }
+
+          - template {
+              - metadata {
+                  - annotations      = {} -> null
+                  - generation       = 0 -> null
+                  - labels           = {
+                      - "app" = "mongodb"
+                    } -> null
+                    name             = null
+                    # (4 unchanged attributes hidden)
+                }
+              - spec {
+                  - active_deadline_seconds          = 0 -> null
+                  - automount_service_account_token  = true -> null
+                  - dns_policy                       = "ClusterFirst" -> null
+                  - enable_service_links             = true -> null
+                  - host_ipc                         = false -> null
+                  - host_network                     = false -> null
+                  - host_pid                         = false -> null
+                  - node_selector                    = {} -> null
+                  - restart_policy                   = "Always" -> null
+                  - scheduler_name                   = "default-scheduler" -> null
+                  - share_process_namespace          = false -> null
+                  - termination_grace_period_seconds = 30 -> null
+                    # (6 unchanged attributes hidden)
+
+                  - container {
+                      - args                       = [] -> null
+                      - command                    = [] -> null
+                      - image                      = "mongo:9.0.8" -> null
+                      - image_pull_policy          = "IfNotPresent" -> null
+                      - name                       = "mongodb" -> null
+                      - stdin                      = false -> null
+                      - stdin_once                 = false -> null
+                      - termination_message_path   = "/dev/termination-log" -> null
+                      - termination_message_policy = "File" -> null
+                      - tty                        = false -> null
+                        # (2 unchanged attributes hidden)
+
+                      - env {
+                          - name  = "MONGO_INITDB_ROOT_USERNAME" -> null
+                            # (1 unchanged attribute hidden)
+
+                          - value_from {
+                              - secret_key_ref {
+                                  - key      = "mongo-root-username" -> null
+                                  - name     = "mongodb-secret" -> null
+                                  - optional = false -> null
+                                }
+                            }
+                        }
+                      - env {
+                          - name  = "MONGO_INITDB_ROOT_PASSWORD" -> null
+                            # (1 unchanged attribute hidden)
+
+                          - value_from {
+                              - secret_key_ref {
+                                  - key      = "mongo-root-password" -> null
+                                  - name     = "mongodb-secret" -> null
+                                  - optional = false -> null
+                                }
+                            }
+                        }
+
+                      - liveness_probe {
+                          - failure_threshold     = 3 -> null
+                          - initial_delay_seconds = 30 -> null
+                          - period_seconds        = 20 -> null
+                          - success_threshold     = 1 -> null
+                          - timeout_seconds       = 1 -> null
+
+                          - tcp_socket {
+                              - port = "mongodb" -> null
+                            }
+                        }
+
+                      - port {
+                          - container_port = 27017 -> null
+                          - host_port      = 0 -> null
+                          - name           = "mongodb" -> null
+                          - protocol       = "TCP" -> null
+                            # (1 unchanged attribute hidden)
+                        }
+
+                      - readiness_probe {
+                          - failure_threshold     = 3 -> null
+                          - initial_delay_seconds = 5 -> null
+                          - period_seconds        = 10 -> null
+                          - success_threshold     = 1 -> null
+                          - timeout_seconds       = 1 -> null
+
+                          - tcp_socket {
+                              - port = "mongodb" -> null
+                            }
+                        }
+
+                      - resources {
+                          - limits   = {} -> null
+                          - requests = {} -> null
+                        }
+
+                      - startup_probe {
+                          - failure_threshold     = 30 -> null
+                          - initial_delay_seconds = 0 -> null
+                          - period_seconds        = 10 -> null
+                          - success_threshold     = 1 -> null
+                          - timeout_seconds       = 1 -> null
+
+                          - tcp_socket {
+                              - port = "mongodb" -> null
+                            }
+                        }
+
+                      - volume_mount {
+                          - mount_path        = "/data/db" -> null
+                          - mount_propagation = "None" -> null
+                          - name              = "mongodb-storage" -> null
+                          - read_only         = false -> null
+                            # (2 unchanged attributes hidden)
+                        }
+                    }
+
+                  - volume {
+                      - name = "mongodb-storage" -> null
+
+                      - persistent_volume_claim {
+                          - claim_name = "mongodb-pvc" -> null
+                          - read_only  = false -> null
+                        }
+                    }
+                }
+            }
+        }
+
+      - timeouts {
+          - create = "5m" -> null
+          - update = "5m" -> null
+        }
+    }
+
+  # kubernetes_namespace_v1.mongodb will be destroyed
+  - resource "kubernetes_namespace_v1" "mongodb" {
+      - id                               = "dev-mongodb-lb" -> null
+      - wait_for_default_service_account = false -> null
+
+      - metadata {
+          - generation       = 0 -> null
+          - labels           = {
+              - "kubernetes.io/metadata.name"        = "dev-mongodb-lb"
+              - "pod-security.kubernetes.io/enforce" = "privileged"
+              - "pod-security.kubernetes.io/warn"    = "privileged"
+            } -> null
+          - name             = "dev-mongodb-lb" -> null
+          - resource_version = "570952" -> null
+          - uid              = "63732c67-d6c5-40ea-bb21-8f96244c3485" -> null
+        }
+    }
+
+  # kubernetes_persistent_volume_claim_v1.mongodb will be destroyed
+  - resource "kubernetes_persistent_volume_claim_v1" "mongodb" {
+      - id               = "dev-mongodb-lb/mongodb-pvc" -> null
+      - wait_until_bound = false -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 0 -> null
+          - labels           = {} -> null
+          - name             = "mongodb-pvc" -> null
+          - namespace        = "dev-mongodb-lb" -> null
+          - resource_version = "571003" -> null
+          - uid              = "64f44221-f279-4792-9555-0515a82a6dfc" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - spec {
+          - access_modes       = [
+              - "ReadWriteOnce",
+            ] -> null
+          - storage_class_name = "vsan-default-storage-policy" -> null
+          - volume_mode        = "Filesystem" -> null
+          - volume_name        = "pvc-64f44221-f279-4792-9555-0515a82a6dfc" -> null
+
+          - resources {
+              - limits   = {} -> null
+              - requests = {
+                  - "storage" = "5Gi"
+                } -> null
+            }
+        }
+    }
+
+  # kubernetes_secret_v1.mongodb will be destroyed
+  - resource "kubernetes_secret_v1" "mongodb" {
+      - binary_data_wo                 = (write-only attribute) -> null
+      - data                           = (sensitive value) -> null
+      - data_wo                        = (write-only attribute) -> null
+      - id                             = "dev-mongodb-lb/mongodb-secret" -> null
+      - immutable                      = false -> null
+      - type                           = "Opaque" -> null
+      - wait_for_service_account_token = true -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 0 -> null
+          - labels           = {} -> null
+          - name             = "mongodb-secret" -> null
+          - namespace        = "dev-mongodb-lb" -> null
+          - resource_version = "570956" -> null
+          - uid              = "176b5ab8-9018-4960-9e3f-2f4ba0fccc99" -> null
+            # (1 unchanged attribute hidden)
+        }
+    }
+
+  # kubernetes_service_v1.mongo_express will be destroyed
+  - resource "kubernetes_service_v1" "mongo_express" {
+      - id                     = "dev-mongodb-lb/mongo-express-service" -> null
+      - status                 = [
+          - {
+              - load_balancer = [
+                  - {
+                      - ingress = [
+                          - {
+                              - ip       = "10.55.16.11"
+                              - ip_mode  = "VIP"
+                                # (1 unchanged attribute hidden)
+                            },
+                        ]
+                    },
+                ]
+            },
+        ] -> null
+      - wait_for_load_balancer = true -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 0 -> null
+          - labels           = {
+              - "app" = "mongo-express"
+            } -> null
+          - name             = "mongo-express-service" -> null
+          - namespace        = "dev-mongodb-lb" -> null
+          - resource_version = "571023" -> null
+          - uid              = "419fcc65-f3cb-48ec-8437-fc09f2f3f01e" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - spec {
+          - allocate_load_balancer_node_ports = true -> null
+          - cluster_ip                        = "10.108.185.242" -> null
+          - cluster_ips                       = [
+              - "10.108.185.242",
+            ] -> null
+          - external_ips                      = [] -> null
+          - external_traffic_policy           = "Cluster" -> null
+          - health_check_node_port            = 0 -> null
+          - internal_traffic_policy           = "Cluster" -> null
+          - ip_families                       = [
+              - "IPv4",
+            ] -> null
+          - ip_family_policy                  = "SingleStack" -> null
+          - load_balancer_source_ranges       = [] -> null
+          - publish_not_ready_addresses       = false -> null
+          - selector                          = {
+              - "app" = "mongo-express"
+            } -> null
+          - session_affinity                  = "None" -> null
+          - type                              = "LoadBalancer" -> null
+            # (3 unchanged attributes hidden)
+
+          - port {
+              - name         = "http" -> null
+              - node_port    = 31112 -> null
+              - port         = 8081 -> null
+              - protocol     = "TCP" -> null
+              - target_port  = "http" -> null
+                # (1 unchanged attribute hidden)
+            }
+        }
+
+      - timeouts {
+          - create = "5m" -> null
+        }
+    }
+
+  # kubernetes_service_v1.mongodb will be destroyed
+  - resource "kubernetes_service_v1" "mongodb" {
+      - id                     = "dev-mongodb-lb/mongodb-service" -> null
+      - status                 = [
+          - {
+              - load_balancer = [
+                  - {
+                      - ingress = []
+                    },
+                ]
+            },
+        ] -> null
+      - wait_for_load_balancer = true -> null
+
+      - metadata {
+          - annotations      = {} -> null
+          - generation       = 0 -> null
+          - labels           = {
+              - "app" = "mongodb"
+            } -> null
+          - name             = "mongodb-service" -> null
+          - namespace        = "dev-mongodb-lb" -> null
+          - resource_version = "570959" -> null
+          - uid              = "33c51c89-7359-40ba-8913-c041aebbeb4d" -> null
+            # (1 unchanged attribute hidden)
+        }
+
+      - spec {
+          - allocate_load_balancer_node_ports = true -> null
+          - cluster_ip                        = "10.105.106.89" -> null
+          - cluster_ips                       = [
+              - "10.105.106.89",
+            ] -> null
+          - external_ips                      = [] -> null
+          - health_check_node_port            = 0 -> null
+          - internal_traffic_policy           = "Cluster" -> null
+          - ip_families                       = [
+              - "IPv4",
+            ] -> null
+          - ip_family_policy                  = "SingleStack" -> null
+          - load_balancer_source_ranges       = [] -> null
+          - publish_not_ready_addresses       = false -> null
+          - selector                          = {
+              - "app" = "mongodb"
+            } -> null
+          - session_affinity                  = "None" -> null
+          - type                              = "ClusterIP" -> null
+            # (4 unchanged attributes hidden)
+
+          - port {
+              - name         = "mongodb" -> null
+              - node_port    = 0 -> null
+              - port         = 27017 -> null
+              - protocol     = "TCP" -> null
+              - target_port  = "mongodb" -> null
+                # (1 unchanged attribute hidden)
+            }
+        }
+    }
+
+Plan: 0 to add, 0 to change, 8 to destroy.
+
+Changes to Outputs:
+  - app_url          = "http://10.55.16.11:8081" -> null
+  - load_balancer_ip = "10.55.16.11" -> null
+kubernetes_service_v1.mongo_express: Destroying... [id=dev-mongodb-lb/mongo-express-service]
+kubernetes_deployment_v1.mongo_express: Destroying... [id=dev-mongodb-lb/mongo-express-deployment]
+kubernetes_deployment_v1.mongo_express: Destruction complete after 0s
+kubernetes_config_map_v1.mongodb: Destroying... [id=dev-mongodb-lb/mongodb-configmap]
+kubernetes_deployment_v1.mongodb: Destroying... [id=dev-mongodb-lb/mongodb-deployment]
+kubernetes_config_map_v1.mongodb: Destruction complete after 0s
+kubernetes_service_v1.mongodb: Destroying... [id=dev-mongodb-lb/mongodb-service]
+kubernetes_deployment_v1.mongodb: Destruction complete after 0s
+kubernetes_secret_v1.mongodb: Destroying... [id=dev-mongodb-lb/mongodb-secret]
+kubernetes_persistent_volume_claim_v1.mongodb: Destroying... [id=dev-mongodb-lb/mongodb-pvc]
+kubernetes_secret_v1.mongodb: Destruction complete after 0s
+kubernetes_service_v1.mongodb: Destruction complete after 0s
+kubernetes_service_v1.mongo_express: Destruction complete after 0s
+kubernetes_persistent_volume_claim_v1.mongodb: Destruction complete after 2s
+kubernetes_namespace_v1.mongodb: Destroying... [id=dev-mongodb-lb]
+kubernetes_namespace_v1.mongodb: Destruction complete after 6s
+
+Destroy complete! Resources: 8 destroyed.

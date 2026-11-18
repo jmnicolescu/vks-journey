@@ -1,0 +1,30 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: istio-mongo-express-gateway
+  namespace: istio-gateway
+spec:
+  gatewayClassName: istio
+  # Request a specific LoadBalancer IP address
+  addresses:
+    - type: IPAddress
+      value: 10.55.16.109
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      hostname: qa-mongo-express-istio.platformlab.vcf
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: mongo-express-tls
+      allowedRoutes:
+        namespaces:
+          from: All

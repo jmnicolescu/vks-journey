@@ -1,0 +1,219 @@
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl config use-context qa-cluster-02:qa-cluster-02                                                                                                 |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Switched to context "qa-cluster-02:qa-cluster-02".
+Application namespace: qa-mongodb-lb | Cluster: qa-cluster-02 | Date: 2026-11-18
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl describe namespace qa-mongodb-lb                                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+Name:         qa-mongodb-lb
+Labels:       kubernetes.io/metadata.name=qa-mongodb-lb
+              pod-security.kubernetes.io/audit=privileged
+              pod-security.kubernetes.io/enforce=privileged
+              pod-security.kubernetes.io/warn=privileged
+Annotations:  <none>
+Status:       Active
+
+No resource quota.
+
+No LimitRange resource.
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get all -n qa-mongodb-lb -o wide                                                                                                               |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                                            READY   STATUS    RESTARTS   AGE     IP           NODE                                                 NOMINATED NODE   READINESS GATES
+pod/mongo-express-deployment-868566b85c-44x9r   1/1     Running   0          2m35s   10.95.2.31   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6   <none>           <none>
+pod/mongo-express-deployment-868566b85c-vpkjn   1/1     Running   0          2m35s   10.95.1.26   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-hgp9g   <none>           <none>
+pod/mongodb-deployment-57b54f7cdd-ps8l6         1/1     Running   0          3m9s    10.95.4.36   qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-f97bd   <none>           <none>
+
+NAME                            TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE     SELECTOR
+service/mongo-express-service   LoadBalancer   10.105.66.143   10.55.16.11   8081:32202/TCP   2m35s   app=mongo-express
+service/mongodb-service         ClusterIP      10.101.85.91    <none>        27017/TCP        3m9s    app=mongodb
+
+NAME                                       READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS      IMAGES                              SELECTOR
+deployment.apps/mongo-express-deployment   2/2     2            2           2m35s   mongo-express   mongo-express:1.0.2-20-alpine3.19   app=mongo-express
+deployment.apps/mongodb-deployment         1/1     1            1           3m9s    mongodb         mongo:9.0.8                         app=mongodb
+
+NAME                                                  DESIRED   CURRENT   READY   AGE     CONTAINERS      IMAGES                              SELECTOR
+replicaset.apps/mongo-express-deployment-868566b85c   2         2         2       2m35s   mongo-express   mongo-express:1.0.2-20-alpine3.19   app=mongo-express,pod-template-hash=868566b85c
+replicaset.apps/mongodb-deployment-57b54f7cdd         1         1         1       3m9s    mongodb         mongo:9.0.8                         app=mongodb,pod-template-hash=57b54f7cdd
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get pods -n qa-mongodb-lb -o custom-columns='POD:.metadata.name,IMAGES:.spec.containers[*].image'                                              |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+POD                                         IMAGES
+mongo-express-deployment-868566b85c-44x9r   mongo-express:1.0.2-20-alpine3.19
+mongo-express-deployment-868566b85c-vpkjn   mongo-express:1.0.2-20-alpine3.19
+mongodb-deployment-57b54f7cdd-ps8l6         mongo:9.0.8
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get pods -n qa-mongodb-lb -o custom-columns='POD:.metadata.name,IMAGE_IDS:.status.containerStatuses[*].imageID'                                |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+POD                                         IMAGE_IDS
+mongo-express-deployment-868566b85c-44x9r   docker.io/library/mongo-express@sha256:1aae0077525133249133d42980ba23998712a1077e02ac0ac295b50a7a79d550
+mongo-express-deployment-868566b85c-vpkjn   docker.io/library/mongo-express@sha256:1aae0077525133249133d42980ba23998712a1077e02ac0ac295b50a7a79d550
+mongodb-deployment-57b54f7cdd-ps8l6         docker.io/library/mongo@sha256:b0c835c26e5997413e985000f1013c275377cd9607761c1784d486f6dd620b7f
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get services -n qa-mongodb-lb -o yaml                                                                                                          |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"mongo-express"},"name":"mongo-express-service","namespace":"qa-mongodb-lb"},"spec":{"ports":[{"name":"http","port":8081,"protocol":"TCP","targetPort":"http"}],"selector":{"app":"mongo-express"},"type":"LoadBalancer"}}
+    creationTimestamp: "2026-11-18T17:10:19Z"
+    finalizers:
+    - service.kubernetes.io/load-balancer-cleanup
+    labels:
+      app: mongo-express
+    name: mongo-express-service
+    namespace: qa-mongodb-lb
+    resourceVersion: "911318"
+    uid: ad7e58ae-47ab-4cb0-9e44-44801d9c226a
+  spec:
+    allocateLoadBalancerNodePorts: true
+    clusterIP: 10.105.66.143
+    clusterIPs:
+    - 10.105.66.143
+    externalTrafficPolicy: Cluster
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: http
+      nodePort: 32202
+      port: 8081
+      protocol: TCP
+      targetPort: http
+    selector:
+      app: mongo-express
+    sessionAffinity: None
+    type: LoadBalancer
+  status:
+    loadBalancer:
+      ingress:
+      - ip: 10.55.16.11
+        ipMode: VIP
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/last-applied-configuration: |
+        {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"labels":{"app":"mongodb"},"name":"mongodb-service","namespace":"qa-mongodb-lb"},"spec":{"ports":[{"name":"mongodb","port":27017,"protocol":"TCP","targetPort":"mongodb"}],"selector":{"app":"mongodb"},"type":"ClusterIP"}}
+    creationTimestamp: "2026-11-18T17:09:45Z"
+    labels:
+      app: mongodb
+    name: mongodb-service
+    namespace: qa-mongodb-lb
+    resourceVersion: "911081"
+    uid: 788a8daf-3c9b-4d78-a67f-e685483e289d
+  spec:
+    clusterIP: 10.101.85.91
+    clusterIPs:
+    - 10.101.85.91
+    internalTrafficPolicy: Cluster
+    ipFamilies:
+    - IPv4
+    ipFamilyPolicy: SingleStack
+    ports:
+    - name: mongodb
+      port: 27017
+      protocol: TCP
+      targetPort: mongodb
+    selector:
+      app: mongodb
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+kind: List
+metadata:
+  resourceVersion: ""
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get endpointslices -n qa-mongodb-lb -o wide                                                                                                    |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                          ADDRESSTYPE   PORTS   ENDPOINTS               AGE
+mongo-express-service-jxx6v   IPv4          8081    10.95.2.31,10.95.1.26   2m35s
+mongodb-service-n94bn         IPv4          27017   10.95.4.36              3m9s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get ingresses,networkpolicies -n qa-mongodb-lb -o wide                                                                                         |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+No resources found in qa-mongodb-lb namespace.
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get persistentvolumeclaims,horizontalpodautoscalers,poddisruptionbudgets -n qa-mongodb-lb -o wide                                              |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                                STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS                  VOLUMEATTRIBUTESCLASS   AGE     VOLUMEMODE
+persistentvolumeclaim/mongodb-pvc   Bound    pvc-8a1ea4ff-7bc7-49bd-b41f-dcce87c8d703   5Gi        RWO            vsan-default-storage-policy   <unset>                 3m10s   Filesystem
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get configmaps,secrets -n qa-mongodb-lb                                                                                                        |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                          DATA   AGE
+configmap/kube-root-ca.crt    1      3m10s
+configmap/mongodb-configmap   4      3m9s
+
+NAME                    TYPE     DATA   AGE
+secret/mongodb-secret   Opaque   3      3m10s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get serviceaccounts,roles,rolebindings -n qa-mongodb-lb                                                                                        |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+NAME                     AGE
+serviceaccount/default   3m10s
+
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+| kubectl get events -n qa-mongodb-lb --sort-by=.metadata.creationTimestamp                                                                              |
++--------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+LAST SEEN   TYPE      REASON                   OBJECT                                           MESSAGE
+3m9s        Normal    ProvisioningSucceeded    persistentvolumeclaim/mongodb-pvc                Successfully provisioned volume pvc-8a1ea4ff-7bc7-49bd-b41f-dcce87c8d703
+3m9s        Normal    Provisioning             persistentvolumeclaim/mongodb-pvc                External provisioner is provisioning volume for claim "qa-mongodb-lb/mongodb-pvc"
+3m9s        Normal    ExternalProvisioning     persistentvolumeclaim/mongodb-pvc                Waiting for a volume to be created either by the external provisioner 'csi.vsphere.vmware.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+3m9s        Normal    ScalingReplicaSet        deployment/mongodb-deployment                    Scaled up replica set mongodb-deployment-57b54f7cdd from 0 to 1
+3m9s        Normal    SuccessfulCreate         replicaset/mongodb-deployment-57b54f7cdd         Created pod: mongodb-deployment-57b54f7cdd-ps8l6
+3m9s        Warning   FailedScheduling         pod/mongodb-deployment-57b54f7cdd-ps8l6          0/6 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+3m9s        Normal    Scheduled                pod/mongodb-deployment-57b54f7cdd-ps8l6          Successfully assigned qa-mongodb-lb/mongodb-deployment-57b54f7cdd-ps8l6 to qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-f97bd
+3m9s        Warning   FailedScheduling         pod/mongodb-deployment-57b54f7cdd-ps8l6          0/6 nodes are available: pod has unbound immediate PersistentVolumeClaims. not found
+3m7s        Normal    SuccessfulAttachVolume   pod/mongodb-deployment-57b54f7cdd-ps8l6          AttachVolume.Attach succeeded for volume "pvc-8a1ea4ff-7bc7-49bd-b41f-dcce87c8d703"
+3m5s        Normal    Pulling                  pod/mongodb-deployment-57b54f7cdd-ps8l6          Pulling image "mongo:9.0.8"
+2m46s       Normal    Pulled                   pod/mongodb-deployment-57b54f7cdd-ps8l6          Successfully pulled image "mongo:9.0.8" in 19.127s (19.127s including waiting). Image size: 393136372 bytes.
+2m46s       Normal    Created                  pod/mongodb-deployment-57b54f7cdd-ps8l6          Container created
+2m46s       Normal    Started                  pod/mongodb-deployment-57b54f7cdd-ps8l6          Container started
+2m45s       Warning   Unhealthy                pod/mongodb-deployment-57b54f7cdd-ps8l6          Startup probe failed: dial tcp 10.95.4.36:27017: connect: connection refused
+2m35s       Warning   SyncLoadBalancerFailed   service/mongo-express-service                    Error syncing load balancer: failed to ensure load balancer: VirtualMachineService IP not found
+2m34s       Normal    Scheduled                pod/mongo-express-deployment-868566b85c-vpkjn    Successfully assigned qa-mongodb-lb/mongo-express-deployment-868566b85c-vpkjn to qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-hgp9g
+2m34s       Normal    Scheduled                pod/mongo-express-deployment-868566b85c-44x9r    Successfully assigned qa-mongodb-lb/mongo-express-deployment-868566b85c-44x9r to qa-cluster-02-qa-cluster-02-np01-mx8jd-xjdvx-drkh6
+2m30s       Normal    EnsuringLoadBalancer     service/mongo-express-service                    Ensuring load balancer
+2m35s       Normal    ScalingReplicaSet        deployment/mongo-express-deployment              Scaled up replica set mongo-express-deployment-868566b85c from 0 to 2
+2m35s       Normal    SuccessfulCreate         replicaset/mongo-express-deployment-868566b85c   Created pod: mongo-express-deployment-868566b85c-44x9r
+2m35s       Normal    SuccessfulCreate         replicaset/mongo-express-deployment-868566b85c   Created pod: mongo-express-deployment-868566b85c-vpkjn
+2m34s       Normal    Pulled                   pod/mongo-express-deployment-868566b85c-44x9r    Container image "mongo-express:1.0.2-20-alpine3.19" already present on machine and can be accessed by the pod
+2m34s       Normal    Created                  pod/mongo-express-deployment-868566b85c-44x9r    Container created
+2m34s       Normal    Started                  pod/mongo-express-deployment-868566b85c-44x9r    Container started
+2m34s       Normal    Pulling                  pod/mongo-express-deployment-868566b85c-vpkjn    Pulling image "mongo-express:1.0.2-20-alpine3.19"
+2m30s       Normal    EnsuredLoadBalancer      service/mongo-express-service                    Ensured load balancer
+2m26s       Normal    Pulled                   pod/mongo-express-deployment-868566b85c-vpkjn    Successfully pulled image "mongo-express:1.0.2-20-alpine3.19" in 8.003s (8.003s including waiting). Image size: 61878836 bytes.
+2m26s       Normal    Created                  pod/mongo-express-deployment-868566b85c-vpkjn    Container created
+2m26s       Normal    Started                  pod/mongo-express-deployment-868566b85c-vpkjn    Container started
+2m25s       Warning   Unhealthy                pod/mongo-express-deployment-868566b85c-vpkjn    Startup probe failed: dial tcp 10.95.1.26:8081: connect: connection refused

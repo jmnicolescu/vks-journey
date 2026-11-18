@@ -1,0 +1,259 @@
+ephemeral.restful_resource.vcenter_session: Opening...
+ephemeral.restful_resource.vcenter_session: Opening complete after 0s
+data.vsphere_datacenter.target: Reading...
+data.vsphere_storage_policy.namespace["vSAN Default Storage Policy"]: Reading...
+data.vsphere_datacenter.target: Read complete after 0s [id=datacenter-3]
+data.vsphere_compute_cluster.target: Reading...
+data.vsphere_storage_policy.namespace["vSAN Default Storage Policy"]: Read complete after 0s [id=aa6d5a82-1c88-45da-85d3-3d74b91a5bad]
+data.vsphere_compute_cluster.target: Read complete after 0s [id=domain-c9]
+restapi_object.namespace: Refreshing state... [id=qa-namespace]
+ephemeral.restful_resource.vcenter_session: Closing...
+ephemeral.restful_resource.vcenter_session: Closing complete after 0s
+ephemeral.restful_resource.vcenter_session: Opening...
+ephemeral.restful_resource.vcenter_session: Opening complete after 0s
+ephemeral.restful_resource.vcenter_session: Closing...
+ephemeral.restful_resource.vcenter_session: Closing complete after 0s
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # restapi_object.namespace will be destroyed
+  - resource "restapi_object" "namespace" {
+      - api_data                  = {
+          - "access_list"            = "[map[domain:vsphere.local role:VIEW subject:LabUsers subject_type:GROUP]]"
+          - "cluster"                = "domain-c9"
+          - "config_status"          = "RUNNING"
+          - "description"            = "qa-namespace"
+          - "messages"               = jsonencode([])
+          - "networks"               = "[workload-ec5aa01b-dc8f-11f1-a1e6-000c29b49dfc]"
+          - "resource_spec"          = "map[cpu_limit:68110 memory_limit:307200 storage_request_limit:512000]"
+          - "self_service_namespace" = "false"
+          - "stats"                  = "map[cpu_used:0 memory_used:0 storage_used:0]"
+          - "storage_specs"          = "[map[limit:512000 policy:aa6d5a82-1c88-45da-85d3-3d74b91a5bad]]"
+          - "vm_service_spec"        = "map[content_libraries:[] vm_classes:[best-effort-medium best-effort-small best-effort-xlarge best-effort-large]]"
+        } -> null
+      - api_response              = jsonencode(
+            {
+              - access_list            = [
+                  - {
+                      - domain       = "vsphere.local"
+                      - role         = "VIEW"
+                      - subject      = "LabUsers"
+                      - subject_type = "GROUP"
+                    },
+                ]
+              - cluster                = "domain-c9"
+              - config_status          = "RUNNING"
+              - description            = "qa-namespace"
+              - messages               = []
+              - networks               = [
+                  - "workload-ec5aa01b-dc8f-11f1-a1e6-000c29b49dfc",
+                ]
+              - resource_spec          = {
+                  - cpu_limit             = 68110
+                  - memory_limit          = 307200
+                  - storage_request_limit = 512000
+                }
+              - self_service_namespace = false
+              - stats                  = {
+                  - cpu_used     = 0
+                  - memory_used  = 0
+                  - storage_used = 0
+                }
+              - storage_specs          = [
+                  - {
+                      - limit  = 512000
+                      - policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+                    },
+                ]
+              - vm_service_spec        = {
+                  - content_libraries = []
+                  - vm_classes        = [
+                      - "best-effort-medium",
+                      - "best-effort-small",
+                      - "best-effort-xlarge",
+                      - "best-effort-large",
+                    ]
+                }
+            }
+        ) -> null
+      - create_method             = "POST" -> null
+      - create_response           = jsonencode(
+            {
+              - access_list            = []
+              - cluster                = "domain-c9"
+              - config_status          = "CONFIGURING"
+              - description            = "qa-namespace"
+              - messages               = []
+              - networks               = [
+                  - "workload-ec5aa01b-dc8f-11f1-a1e6-000c29b49dfc",
+                ]
+              - resource_spec          = {
+                  - cpu_limit             = 68110
+                  - memory_limit          = 307200
+                  - storage_request_limit = 512000
+                }
+              - self_service_namespace = false
+              - stats                  = {
+                  - cpu_used     = 0
+                  - memory_used  = 0
+                  - storage_used = 0
+                }
+              - storage_specs          = [
+                  - {
+                      - limit  = 512000
+                      - policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+                    },
+                ]
+              - vm_service_spec        = {
+                  - content_libraries = []
+                  - vm_classes        = [
+                      - "best-effort-xlarge",
+                      - "best-effort-large",
+                      - "best-effort-medium",
+                      - "best-effort-small",
+                    ]
+                }
+            }
+        ) -> null
+      - data                      = jsonencode(
+            {
+              - access_list            = [
+                  - {
+                      - domain       = "vsphere.local"
+                      - role         = "VIEW"
+                      - subject      = "LabUsers"
+                      - subject_type = "GROUP"
+                    },
+                ]
+              - cluster                = "domain-c9"
+              - config_status          = "RUNNING"
+              - description            = "qa-namespace"
+              - messages               = []
+              - namespace              = null
+              - networks               = [
+                  - "workload-ec5aa01b-dc8f-11f1-a1e6-000c29b49dfc",
+                ]
+              - resource_spec          = {
+                  - cpu_limit             = 68110
+                  - memory_limit          = 307200
+                  - storage_request_limit = 512000
+                }
+              - self_service_namespace = false
+              - stats                  = {
+                  - cpu_used     = 0
+                  - memory_used  = 0
+                  - storage_used = 0
+                }
+              - storage_specs          = [
+                  - {
+                      - limit  = 512000
+                      - policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+                    },
+                ]
+              - vm_service_spec        = {
+                  - content_libraries = []
+                  - vm_classes        = [
+                      - "best-effort-medium",
+                      - "best-effort-small",
+                      - "best-effort-xlarge",
+                      - "best-effort-large",
+                    ]
+                }
+            }
+        ) -> null
+      - destroy_method            = "DELETE" -> null
+      - force_new                 = [
+          - "namespace",
+          - "cluster",
+        ] -> null
+      - id                        = "qa-namespace" -> null
+      - id_attribute              = "namespace" -> null
+      - ignore_all_server_changes = false -> null
+      - object_id                 = "qa-namespace" -> null
+      - path                      = "/api/vcenter/namespaces/instances" -> null
+      - read_method               = "GET" -> null
+      - update_data               = jsonencode(
+            {
+              - access_list     = [
+                  - {
+                      - domain       = "vsphere.local"
+                      - role         = "VIEW"
+                      - subject      = "LabUsers"
+                      - subject_type = "GROUP"
+                    },
+                ]
+              - description     = "qa-namespace"
+              - resource_spec   = {
+                  - cpu_limit             = 68110
+                  - memory_limit          = 307200
+                  - storage_request_limit = 512000
+                }
+              - storage_specs   = [
+                  - {
+                      - limit  = 512000
+                      - policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+                    },
+                ]
+              - vm_service_spec = {
+                  - vm_classes = [
+                      - "best-effort-small",
+                      - "best-effort-medium",
+                      - "best-effort-large",
+                      - "best-effort-xlarge",
+                    ]
+                }
+            }
+        ) -> null
+      - update_method             = "PATCH" -> null
+    }
+
+Plan: 0 to add, 0 to change, 1 to destroy.
+
+Changes to Outputs:
+  - cluster_id     = "domain-c9" -> null
+  - config_status  = "RUNNING" -> null
+  - create_spec    = {
+      - access_list     = [
+          - {
+              - domain       = "vsphere.local"
+              - role         = "VIEW"
+              - subject      = "LabUsers"
+              - subject_type = "GROUP"
+            },
+        ]
+      - cluster         = "domain-c9"
+      - description     = "qa-namespace"
+      - namespace       = "qa-namespace"
+      - resource_spec   = {
+          - cpu_limit             = 68110
+          - memory_limit          = 307200
+          - storage_request_limit = 512000
+        }
+      - storage_specs   = [
+          - {
+              - limit  = 512000
+              - policy = "aa6d5a82-1c88-45da-85d3-3d74b91a5bad"
+            },
+        ]
+      - vm_service_spec = {
+          - vm_classes = [
+              - "best-effort-small",
+              - "best-effort-medium",
+              - "best-effort-large",
+              - "best-effort-xlarge",
+            ]
+        }
+    } -> null
+  - namespace_name = "qa-namespace" -> null
+ephemeral.restful_resource.vcenter_session: Opening...
+ephemeral.restful_resource.vcenter_session: Opening complete after 0s
+restapi_object.namespace: Destroying... [id=qa-namespace]
+restapi_object.namespace: Destruction complete after 1s
+ephemeral.restful_resource.vcenter_session: Closing...
+ephemeral.restful_resource.vcenter_session: Closing complete after 0s
+
+Destroy complete! Resources: 1 destroyed.

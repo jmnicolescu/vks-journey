@@ -1,0 +1,162 @@
+apiVersion: addons.kubernetes.vmware.com/v1alpha1
+kind: AddonConfig
+metadata:
+  name: dev-cluster-01-istio
+  namespace: dev-namespace
+spec:
+  values:
+    # --------------------------------------------------------------------------------------------------
+    # VCF 9.1.1 / VKS 3.7.0 / istio.kubernetes.vmware.com.1.30.0-vmware.1-vks.1
+    # --------------------------------------------------------------------------------------------------
+    # Goal:
+    #   - Use Kubernetes Gateway API (GatewayClass, Gateway, HTTPRoute) for application ingress.
+    #   - Let Istio provision the gateway proxy Service and Deployment when a Gateway is created.
+    #   - Do NOT install the legacy/preconfigured Istio ingress or egress gateways.
+    #   - Keep Ambient Mesh and mesh-wide STRICT mTLS disabled for initial evaluation.
+    #   - Retain useful access logging, Prometheus metrics and a redundant Istio control plane.
+    #
+    # Prerequisites (not configured by this file):
+    #   - Compatible Gateway API CRDs in the VKS workload cluster (check before installing/updating).
+    #   - An Istio-managed GatewayClass (usually named "istio") after the add-on is ready.
+    #   - A working Service type LoadBalancer implementation to assign an IP to the Gateway proxy.
+    #   - A Gateway and HTTPRoute created separately in the VKS workload cluster.
+    #
+    # Note: enableGatewayAPIInference refers to the Gateway API Inference Extension,
+    #       not standard Gateway / HTTPRoute support.
+    # --------------------------------------------------------------------------------------------------
+    
+    istio:
+      # 1. Standard sidecar model; no Ambient Mesh / ztunnel for this PoC.
+      ambientMode:
+        enabled: false
+        ztunnel:
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+    
+      # 2. Standard Gateway API needs no AI inference extension.
+      enableGatewayAPIInference: false
+    
+      # 3. Do not impose mesh-wide STRICT mTLS on non-mesh PoC backends.
+      enableStrictMTLS: false
+    
+      # 4. No preconfigured legacy Istio gateways: Gateway API provisions its own proxy.
+      gateways:
+        egress:
+          autoscaling:
+            enabled: false
+            maxReplicas: 5
+            minReplicas: 1
+          enabled: false
+          namespace: istio-egress
+          namespaceLimitRange:
+            defaultRequests:
+              cpu: 100m
+              memory: 128Mi
+          priorityClassName: ""
+          replicas: 1
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 1024Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+    
+        ingress:
+          autoscaling:
+            enabled: false
+            maxReplicas: 5
+            minReplicas: 1
+          enabled: false
+          namespace: istio-ingress
+          namespaceLimitRange:
+            defaultRequests:
+              cpu: 100m
+              memory: 128Mi
+          priorityClassName: ""
+          replicas: 1
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 1024Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+    
+      # 5. Retain vendor default Istio CNI support (available for later sidecar testing).
+      istioCNI:
+        enabled: true
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+    
+      # 6. Mesh observability and networking defaults suitable for PoC.
+      meshConfig:
+        accessLogFile: /dev/stdout
+        connectTimeout: 10s
+        enableDNSProxy: false
+        enablePrometheusMerge: true
+        # Without a tracing collector, turning on tracing adds little value to the PoC.
+        enableTracing: false
+        externalIstiod: false
+        # This governs traditional Istio/Kubernetes Ingress handling, not Gateway API enablement.
+        ingressControllerMode: STRICT
+        ingressSelector: ingressgateway
+        meshID: ""
+        meshMTLS:
+          minProtocolVersion: TLSV1_2
+        network: ""
+        proxy:
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 1024Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+        trustDomain: cluster.local
+        trustDomainAliases: []
+        waypoint:
+          resources:
+            limits:
+              cpu: "2"
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+    
+      # 7. Dedicated control-plane namespace.
+      namespace: istio-system
+    
+      # 8. Default container requests within the Istio control-plane namespace.
+      namespaceLimitRange:
+        defaultRequests:
+          cpu: 100m
+          memory: 64Mi
+    
+      # 9. Redundant istiod control plane, no autoscaler needed for small PoC.
+      pilot:
+        autoscaling:
+          enabled: false
+          maxReplicas: 5
+          minReplicas: 2
+        priorityClassName: ""
+        replicas: 2
+        resources:
+          requests:
+            cpu: 500m
+            memory: 2048Mi
+    
+      # 10. Add-on supporting resources.
+      support:
+        priorityClassName: ""
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+    
+    # Leave blank unless the add-on documentation requires a specific VKS cluster version override.
+    vks_cluster_version: ""

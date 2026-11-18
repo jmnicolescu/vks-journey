@@ -1,0 +1,27 @@
+certManager:
+  pspNames:
+    - vmware-system-privileged
+# Enable standard Gateway API certificate integration.
+controller:
+  enableGatewayAPI: true
+  enableGatewayAPIListenerSet: false
+# Retain VMware default deployment resource requests.
+deploymentMode:
+  resources:
+    requests:
+      cpu: 10m
+      memory: 64Mi
+# Certificate issuers will be configured separately.
+issuers: []
+# Use package defaults for Kubernetes distribution and version.
+kubernetes_distribution: ""
+kubernetes_version: ""
+# cert-manager installation namespace.
+namespace: cert-manager
+# Default namespace resource requests.
+nsLimitRange:
+  defaultRequests:
+    cpu: 10m
+    memory: 64Mi
+# Use default Kubernetes scheduling priority.
+priorityClassName: ""

@@ -1,0 +1,38 @@
+apiVersion: addons.kubernetes.vmware.com/v1alpha1
+kind: AddonConfig
+metadata:
+  name: dev-cluster-01-cert-manager
+  namespace: dev-namespace
+spec:
+  addonConfigDefinitionRef:
+    name: cert-manager.kubernetes.vmware.com.1.20.2---vmware.1-vks.1
+    namespace: vmware-system-vks-public
+  clusterName: dev-cluster-01
+  values:
+    certManager:
+      pspNames:
+        - vmware-system-privileged
+    # Enable standard Gateway API certificate integration.
+    controller:
+      enableGatewayAPI: true
+      enableGatewayAPIListenerSet: false
+    # Retain VMware default deployment resource requests.
+    deploymentMode:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+    # Certificate issuers will be configured separately.
+    issuers: []
+    # Use package defaults for Kubernetes distribution and version.
+    kubernetes_distribution: ""
+    kubernetes_version: ""
+    # cert-manager installation namespace.
+    namespace: cert-manager
+    # Default namespace resource requests.
+    nsLimitRange:
+      defaultRequests:
+        cpu: 10m
+        memory: 64Mi
+    # Use default Kubernetes scheduling priority.
+    priorityClassName: ""

@@ -1,0 +1,539 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # kubernetes_config_map_v1.mongodb will be created
+  + resource "kubernetes_config_map_v1" "mongodb" {
+      + data = {
+          + "database_host" = "mongodb-service"
+          + "database_port" = "27017"
+          + "database_uri"  = "mongodb://mongodb-service:27017"
+          + "database_url"  = "mongodb-service"
+        }
+      + id   = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "mongodb-configmap"
+          + namespace        = "dev-mongodb-lb"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_deployment_v1.mongo_express will be created
+  + resource "kubernetes_deployment_v1" "mongo_express" {
+      + id               = (known after apply)
+      + wait_for_rollout = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app" = "mongo-express"
+            }
+          + name             = "mongo-express-deployment"
+          + namespace        = "dev-mongodb-lb"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + min_ready_seconds         = 0
+          + paused                    = false
+          + progress_deadline_seconds = 600
+          + replicas                  = "2"
+          + revision_history_limit    = 10
+
+          + selector {
+              + match_labels = {
+                  + "app" = "mongo-express"
+                }
+            }
+
+          + strategy (known after apply)
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + labels           = {
+                      + "app" = "mongo-express"
+                    }
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + restart_policy                   = "Always"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = (known after apply)
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + image                      = "mongo-express:1.0.2-20-alpine3.19"
+                      + image_pull_policy          = "IfNotPresent"
+                      + name                       = "mongo-express"
+                      + restart_policy             = (known after apply)
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name = "ME_CONFIG_MONGODB_ADMINUSERNAME"
+
+                          + value_from {
+                              + secret_key_ref {
+                                  + key  = "mongo-root-username"
+                                  + name = "mongodb-secret"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "ME_CONFIG_MONGODB_ADMINPASSWORD"
+
+                          + value_from {
+                              + secret_key_ref {
+                                  + key  = "mongo-root-password"
+                                  + name = "mongodb-secret"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "ME_CONFIG_MONGODB_SERVER"
+
+                          + value_from {
+                              + config_map_key_ref {
+                                  + key  = "database_url"
+                                  + name = "mongodb-configmap"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "ME_CONFIG_MONGODB_PORT"
+                          + value = "27017"
+                        }
+                      + env {
+                          + name  = "ME_CONFIG_MONGODB_ENABLE_ADMIN"
+                          + value = "true"
+                        }
+                      + env {
+                          + name  = "ME_CONFIG_BASICAUTH"
+                          + value = "true"
+                        }
+                      + env {
+                          + name  = "ME_CONFIG_BASICAUTH_USERNAME"
+                          + value = "admin"
+                        }
+                      + env {
+                          + name = "ME_CONFIG_BASICAUTH_PASSWORD"
+
+                          + value_from {
+                              + secret_key_ref {
+                                  + key  = "mongo-express-password"
+                                  + name = "mongodb-secret"
+                                }
+                            }
+                        }
+
+                      + liveness_probe {
+                          + failure_threshold = 3
+                          + period_seconds    = 20
+                          + success_threshold = 1
+                          + timeout_seconds   = 1
+
+                          + tcp_socket {
+                              + port = "http"
+                            }
+                        }
+
+                      + port {
+                          + container_port = 8081
+                          + name           = "http"
+                          + protocol       = "TCP"
+                        }
+
+                      + readiness_probe {
+                          + failure_threshold = 3
+                          + period_seconds    = 10
+                          + success_threshold = 1
+                          + timeout_seconds   = 1
+
+                          + tcp_socket {
+                              + port = "http"
+                            }
+                        }
+
+                      + resources (known after apply)
+
+                      + startup_probe {
+                          + failure_threshold = 30
+                          + period_seconds    = 10
+                          + success_threshold = 1
+                          + timeout_seconds   = 1
+
+                          + tcp_socket {
+                              + port = "http"
+                            }
+                        }
+                    }
+
+                  + image_pull_secrets (known after apply)
+
+                  + readiness_gate (known after apply)
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "5m"
+          + update = "5m"
+        }
+    }
+
+  # kubernetes_deployment_v1.mongodb will be created
+  + resource "kubernetes_deployment_v1" "mongodb" {
+      + id               = (known after apply)
+      + wait_for_rollout = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app" = "mongodb"
+            }
+          + name             = "mongodb-deployment"
+          + namespace        = "dev-mongodb-lb"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + min_ready_seconds         = 0
+          + paused                    = false
+          + progress_deadline_seconds = 600
+          + replicas                  = "1"
+          + revision_history_limit    = 10
+
+          + selector {
+              + match_labels = {
+                  + "app" = "mongodb"
+                }
+            }
+
+          + strategy {
+              + type = "Recreate"
+
+              + rolling_update (known after apply)
+            }
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + labels           = {
+                      + "app" = "mongodb"
+                    }
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + restart_policy                   = "Always"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = (known after apply)
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + image                      = "mongo:9.0.8"
+                      + image_pull_policy          = "IfNotPresent"
+                      + name                       = "mongodb"
+                      + restart_policy             = (known after apply)
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name = "MONGO_INITDB_ROOT_USERNAME"
+
+                          + value_from {
+                              + secret_key_ref {
+                                  + key  = "mongo-root-username"
+                                  + name = "mongodb-secret"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "MONGO_INITDB_ROOT_PASSWORD"
+
+                          + value_from {
+                              + secret_key_ref {
+                                  + key  = "mongo-root-password"
+                                  + name = "mongodb-secret"
+                                }
+                            }
+                        }
+
+                      + liveness_probe {
+                          + failure_threshold     = 3
+                          + initial_delay_seconds = 30
+                          + period_seconds        = 20
+                          + success_threshold     = 1
+                          + timeout_seconds       = 1
+
+                          + tcp_socket {
+                              + port = "mongodb"
+                            }
+                        }
+
+                      + port {
+                          + container_port = 27017
+                          + name           = "mongodb"
+                          + protocol       = "TCP"
+                        }
+
+                      + readiness_probe {
+                          + failure_threshold     = 3
+                          + initial_delay_seconds = 5
+                          + period_seconds        = 10
+                          + success_threshold     = 1
+                          + timeout_seconds       = 1
+
+                          + tcp_socket {
+                              + port = "mongodb"
+                            }
+                        }
+
+                      + resources (known after apply)
+
+                      + startup_probe {
+                          + failure_threshold = 30
+                          + period_seconds    = 10
+                          + success_threshold = 1
+                          + timeout_seconds   = 1
+
+                          + tcp_socket {
+                              + port = "mongodb"
+                            }
+                        }
+
+                      + volume_mount {
+                          + mount_path        = "/data/db"
+                          + mount_propagation = "None"
+                          + name              = "mongodb-storage"
+                          + read_only         = false
+                        }
+                    }
+
+                  + image_pull_secrets (known after apply)
+
+                  + readiness_gate (known after apply)
+
+                  + volume {
+                      + name = "mongodb-storage"
+
+                      + persistent_volume_claim {
+                          + claim_name = "mongodb-pvc"
+                          + read_only  = false
+                        }
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "5m"
+          + update = "5m"
+        }
+    }
+
+  # kubernetes_namespace_v1.mongodb will be created
+  + resource "kubernetes_namespace_v1" "mongodb" {
+      + id                               = (known after apply)
+      + wait_for_default_service_account = false
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "kubernetes.io/metadata.name"        = "dev-mongodb-lb"
+              + "pod-security.kubernetes.io/enforce" = "privileged"
+              + "pod-security.kubernetes.io/warn"    = "privileged"
+            }
+          + name             = "dev-mongodb-lb"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_persistent_volume_claim_v1.mongodb will be created
+  + resource "kubernetes_persistent_volume_claim_v1" "mongodb" {
+      + id               = (known after apply)
+      + wait_until_bound = false
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "mongodb-pvc"
+          + namespace        = "dev-mongodb-lb"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + access_modes       = [
+              + "ReadWriteOnce",
+            ]
+          + storage_class_name = "vsan-default-storage-policy"
+          + volume_mode        = (known after apply)
+          + volume_name        = (known after apply)
+
+          + resources {
+              + requests = {
+                  + "storage" = "5Gi"
+                }
+            }
+        }
+    }
+
+  # kubernetes_secret_v1.mongodb will be created
+  + resource "kubernetes_secret_v1" "mongodb" {
+      + binary_data_wo                 = (write-only attribute)
+      + data                           = (sensitive value)
+      + data_wo                        = (write-only attribute)
+      + id                             = (known after apply)
+      + type                           = "Opaque"
+      + wait_for_service_account_token = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "mongodb-secret"
+          + namespace        = "dev-mongodb-lb"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # kubernetes_service_v1.mongo_express will be created
+  + resource "kubernetes_service_v1" "mongo_express" {
+      + id                     = (known after apply)
+      + status                 = (known after apply)
+      + wait_for_load_balancer = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app" = "mongo-express"
+            }
+          + name             = "mongo-express-service"
+          + namespace        = "dev-mongodb-lb"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + allocate_load_balancer_node_ports = true
+          + cluster_ip                        = (known after apply)
+          + cluster_ips                       = (known after apply)
+          + external_traffic_policy           = (known after apply)
+          + health_check_node_port            = (known after apply)
+          + internal_traffic_policy           = (known after apply)
+          + ip_families                       = (known after apply)
+          + ip_family_policy                  = (known after apply)
+          + publish_not_ready_addresses       = false
+          + selector                          = {
+              + "app" = "mongo-express"
+            }
+          + session_affinity                  = "None"
+          + type                              = "LoadBalancer"
+
+          + port {
+              + name        = "http"
+              + node_port   = (known after apply)
+              + port        = 8081
+              + protocol    = "TCP"
+              + target_port = "http"
+            }
+
+          + session_affinity_config (known after apply)
+        }
+
+      + timeouts {
+          + create = "5m"
+        }
+    }
+
+  # kubernetes_service_v1.mongodb will be created
+  + resource "kubernetes_service_v1" "mongodb" {
+      + id                     = (known after apply)
+      + status                 = (known after apply)
+      + wait_for_load_balancer = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app" = "mongodb"
+            }
+          + name             = "mongodb-service"
+          + namespace        = "dev-mongodb-lb"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + allocate_load_balancer_node_ports = true
+          + cluster_ip                        = (known after apply)
+          + cluster_ips                       = (known after apply)
+          + external_traffic_policy           = (known after apply)
+          + health_check_node_port            = (known after apply)
+          + internal_traffic_policy           = (known after apply)
+          + ip_families                       = (known after apply)
+          + ip_family_policy                  = (known after apply)
+          + publish_not_ready_addresses       = false
+          + selector                          = {
+              + "app" = "mongodb"
+            }
+          + session_affinity                  = "None"
+          + type                              = "ClusterIP"
+
+          + port {
+              + name        = "mongodb"
+              + node_port   = (known after apply)
+              + port        = 27017
+              + protocol    = "TCP"
+              + target_port = "mongodb"
+            }
+
+          + session_affinity_config (known after apply)
+        }
+    }
+
+Plan: 8 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + app_url          = (known after apply)
+  + load_balancer_ip = (known after apply)
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.

@@ -1,0 +1,471 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # kubernetes_manifest.cluster will be created
+  + resource "kubernetes_manifest" "cluster" {
+      + computed_fields = [
+          + "metadata.annotations",
+          + "metadata.labels",
+          + "spec.topology.variables",
+          + "spec.topology.version",
+        ]
+      + manifest        = {
+          + apiVersion = "cluster.x-k8s.io/v1beta2"
+          + kind       = "Cluster"
+          + metadata   = {
+              + name      = "dev-cluster-01"
+              + namespace = "dev-namespace"
+            }
+          + spec       = {
+              + clusterNetwork = {
+                  + pods          = {
+                      + cidrBlocks = [
+                          + "10.95.0.0/16",
+                        ]
+                    }
+                  + serviceDomain = "cluster.local"
+                  + services      = {
+                      + cidrBlocks = [
+                          + "10.96.0.0/12",
+                        ]
+                    }
+                }
+              + topology       = {
+                  + classRef     = {
+                      + name      = "builtin-generic-v3.7.0"
+                      + namespace = "vmware-system-vks-public"
+                    }
+                  + controlPlane = {
+                      + metadata = {
+                          + annotations = {
+                              + "run.tanzu.vmware.com/resolve-os-image" = "os-name=photon"
+                            }
+                        }
+                      + replicas = 3
+                    }
+                  + variables    = [
+                      + {
+                          + name  = "vmClass"
+                          + value = "best-effort-medium"
+                        },
+                      + {
+                          + name  = "storageClass"
+                          + value = "vsan-default-storage-policy"
+                        },
+                      + {
+                          + name  = "bootstrapAddons"
+                          + value = {
+                              + cniRef = {
+                                  + name      = "antrea"
+                                  + namespace = "vmware-system-vks-public"
+                                }
+                            }
+                        },
+                      + {
+                          + name  = "kubernetes"
+                          + value = {
+                              + certificateRotation = {
+                                  + enabled                 = true
+                                  + renewalDaysBeforeExpiry = 90
+                                }
+                              + security            = {
+                                  + podSecurityStandard = {
+                                      + audit          = "restricted"
+                                      + auditVersion   = "latest"
+                                      + deactivated    = false
+                                      + enforce        = "privileged"
+                                      + enforceVersion = "latest"
+                                      + warn           = "privileged"
+                                      + warnVersion    = "latest"
+                                    }
+                                }
+                            }
+                        },
+                    ]
+                  + version      = "v1.35.6---vmware.2-vkr.3"
+                  + workers      = {
+                      + machineDeployments = [
+                          + {
+                              + class     = "node-pool"
+                              + metadata  = {
+                                  + annotations = {
+                                      + "run.tanzu.vmware.com/resolve-os-image" = "os-name=photon"
+                                    }
+                                }
+                              + name      = "dev-cluster-01-np01"
+                              + replicas  = 3
+                              + variables = {
+                                  + overrides = [
+                                      + {
+                                          + name  = "volumes"
+                                          + value = [
+                                              + {
+                                                  + capacity     = "30Gi"
+                                                  + mountPath    = "/var/lib/containerd"
+                                                  + name         = "vol-containerd"
+                                                  + storageClass = "vsan-default-storage-policy"
+                                                },
+                                            ]
+                                        },
+                                    ]
+                                }
+                            },
+                        ]
+                    }
+                }
+            }
+        }
+      + object          = {
+          + apiVersion = "cluster.x-k8s.io/v1beta2"
+          + kind       = "Cluster"
+          + metadata   = {
+              + annotations                = (known after apply)
+              + creationTimestamp          = (known after apply)
+              + deletionGracePeriodSeconds = (known after apply)
+              + deletionTimestamp          = (known after apply)
+              + finalizers                 = (known after apply)
+              + generateName               = (known after apply)
+              + generation                 = (known after apply)
+              + labels                     = (known after apply)
+              + managedFields              = (known after apply)
+              + name                       = "dev-cluster-01"
+              + namespace                  = "dev-namespace"
+              + ownerReferences            = (known after apply)
+              + resourceVersion            = (known after apply)
+              + selfLink                   = (known after apply)
+              + uid                        = (known after apply)
+            }
+          + spec       = {
+              + availabilityGates    = (known after apply)
+              + clusterNetwork       = {
+                  + apiServerPort = (known after apply)
+                  + pods          = {
+                      + cidrBlocks = [
+                          + "10.95.0.0/16",
+                        ]
+                    }
+                  + serviceDomain = "cluster.local"
+                  + services      = {
+                      + cidrBlocks = [
+                          + "10.96.0.0/12",
+                        ]
+                    }
+                }
+              + controlPlaneEndpoint = {
+                  + host = (known after apply)
+                  + port = (known after apply)
+                }
+              + controlPlaneRef      = {
+                  + apiGroup = (known after apply)
+                  + kind     = (known after apply)
+                  + name     = (known after apply)
+                }
+              + infrastructureRef    = {
+                  + apiGroup = (known after apply)
+                  + kind     = (known after apply)
+                  + name     = (known after apply)
+                }
+              + paused               = (known after apply)
+              + topology             = {
+                  + classRef     = {
+                      + name      = "builtin-generic-v3.7.0"
+                      + namespace = "vmware-system-vks-public"
+                    }
+                  + controlPlane = {
+                      + deletion       = {
+                          + nodeDeletionTimeoutSeconds     = (known after apply)
+                          + nodeDrainTimeoutSeconds        = (known after apply)
+                          + nodeVolumeDetachTimeoutSeconds = (known after apply)
+                        }
+                      + healthCheck    = {
+                          + checks      = {
+                              + nodeStartupTimeoutSeconds  = (known after apply)
+                              + unhealthyMachineConditions = (known after apply)
+                              + unhealthyNodeConditions    = (known after apply)
+                            }
+                          + enabled     = (known after apply)
+                          + remediation = {
+                              + templateRef = {
+                                  + apiVersion = (known after apply)
+                                  + kind       = (known after apply)
+                                  + name       = (known after apply)
+                                }
+                              + triggerIf   = {
+                                  + unhealthyInRange           = (known after apply)
+                                  + unhealthyLessThanOrEqualTo = (known after apply)
+                                }
+                            }
+                        }
+                      + metadata       = {
+                          + annotations = {
+                              + "run.tanzu.vmware.com/resolve-os-image" = "os-name=photon"
+                            }
+                          + labels      = (known after apply)
+                        }
+                      + readinessGates = (known after apply)
+                      + replicas       = 3
+                      + rollout        = {
+                          + after = (known after apply)
+                        }
+                      + taints         = (known after apply)
+                      + variables      = {
+                          + overrides = (known after apply)
+                        }
+                    }
+                  + variables    = (known after apply)
+                  + version      = (known after apply)
+                  + workers      = {
+                      + machineDeployments = [
+                          + {
+                              + class           = "node-pool"
+                              + deletion        = {
+                                  + nodeDeletionTimeoutSeconds     = (known after apply)
+                                  + nodeDrainTimeoutSeconds        = (known after apply)
+                                  + nodeVolumeDetachTimeoutSeconds = (known after apply)
+                                  + order                          = (known after apply)
+                                }
+                              + failureDomain   = (known after apply)
+                              + healthCheck     = {
+                                  + checks      = {
+                                      + nodeStartupTimeoutSeconds  = (known after apply)
+                                      + unhealthyMachineConditions = (known after apply)
+                                      + unhealthyNodeConditions    = (known after apply)
+                                    }
+                                  + enabled     = (known after apply)
+                                  + remediation = {
+                                      + maxInFlight = (known after apply)
+                                      + templateRef = {
+                                          + apiVersion = (known after apply)
+                                          + kind       = (known after apply)
+                                          + name       = (known after apply)
+                                        }
+                                      + triggerIf   = {
+                                          + unhealthyInRange           = (known after apply)
+                                          + unhealthyLessThanOrEqualTo = (known after apply)
+                                        }
+                                    }
+                                }
+                              + metadata        = {
+                                  + annotations = {
+                                      + "run.tanzu.vmware.com/resolve-os-image" = "os-name=photon"
+                                    }
+                                  + labels      = (known after apply)
+                                }
+                              + minReadySeconds = (known after apply)
+                              + name            = "dev-cluster-01-np01"
+                              + readinessGates  = (known after apply)
+                              + replicas        = 3
+                              + rollout         = {
+                                  + after    = (known after apply)
+                                  + strategy = {
+                                      + rollingUpdate = {
+                                          + maxSurge       = (known after apply)
+                                          + maxUnavailable = (known after apply)
+                                        }
+                                      + type          = (known after apply)
+                                    }
+                                }
+                              + taints          = (known after apply)
+                              + variables       = {
+                                  + overrides = [
+                                      + {
+                                          + name  = "volumes"
+                                          + value = [
+                                              + {
+                                                  + capacity     = "30Gi"
+                                                  + mountPath    = "/var/lib/containerd"
+                                                  + name         = "vol-containerd"
+                                                  + storageClass = "vsan-default-storage-policy"
+                                                },
+                                            ]
+                                        },
+                                    ]
+                                }
+                            },
+                        ]
+                      + machinePools       = (known after apply)
+                    }
+                }
+            }
+        }
+
+      + field_manager {
+          + force_conflicts = false
+          + name            = "terraform-vks-cluster"
+        }
+
+      + timeouts {
+          + create = "60m"
+          + delete = "60m"
+          + update = "60m"
+        }
+
+      + wait {
+          + condition {
+              + status = "True"
+              + type   = "Available"
+            }
+        }
+    }
+
+  # local_file.cluster_manifest will be created
+  + resource "local_file" "cluster_manifest" {
+      + content              = <<-EOT
+            "apiVersion": "cluster.x-k8s.io/v1beta2"
+            "kind": "Cluster"
+            "metadata":
+              "name": "dev-cluster-01"
+              "namespace": "dev-namespace"
+            "spec":
+              "clusterNetwork":
+                "pods":
+                  "cidrBlocks":
+                  - "10.95.0.0/16"
+                "serviceDomain": "cluster.local"
+                "services":
+                  "cidrBlocks":
+                  - "10.96.0.0/12"
+              "topology":
+                "classRef":
+                  "name": "builtin-generic-v3.7.0"
+                  "namespace": "vmware-system-vks-public"
+                "controlPlane":
+                  "metadata":
+                    "annotations":
+                      "run.tanzu.vmware.com/resolve-os-image": "os-name=photon"
+                  "replicas": 3
+                "variables":
+                - "name": "vmClass"
+                  "value": "best-effort-medium"
+                - "name": "storageClass"
+                  "value": "vsan-default-storage-policy"
+                - "name": "bootstrapAddons"
+                  "value":
+                    "cniRef":
+                      "name": "antrea"
+                      "namespace": "vmware-system-vks-public"
+                - "name": "kubernetes"
+                  "value":
+                    "certificateRotation":
+                      "enabled": true
+                      "renewalDaysBeforeExpiry": 90
+                    "security":
+                      "podSecurityStandard":
+                        "audit": "restricted"
+                        "auditVersion": "latest"
+                        "deactivated": false
+                        "enforce": "privileged"
+                        "enforceVersion": "latest"
+                        "warn": "privileged"
+                        "warnVersion": "latest"
+                "version": "v1.35.6---vmware.2-vkr.3"
+                "workers":
+                  "machineDeployments":
+                  - "class": "node-pool"
+                    "metadata":
+                      "annotations":
+                        "run.tanzu.vmware.com/resolve-os-image": "os-name=photon"
+                    "name": "dev-cluster-01-np01"
+                    "replicas": 3
+                    "variables":
+                      "overrides":
+                      - "name": "volumes"
+                        "value":
+                        - "capacity": "30Gi"
+                          "mountPath": "/var/lib/containerd"
+                          "name": "vol-containerd"
+                          "storageClass": "vsan-default-storage-policy"
+        EOT
+      + content_base64sha256 = (known after apply)
+      + content_base64sha512 = (known after apply)
+      + content_md5          = (known after apply)
+      + content_sha1         = (known after apply)
+      + content_sha256       = (known after apply)
+      + content_sha512       = (known after apply)
+      + directory_permission = "0700"
+      + file_permission      = "0600"
+      + filename             = "./deployment-files/create-dev-cluster-01.yaml"
+      + id                   = (known after apply)
+    }
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + cluster_name  = "dev-cluster-01"
+  + manifest_file = "./deployment-files/create-dev-cluster-01.yaml"
+  + manifest_yaml = <<-EOT
+        "apiVersion": "cluster.x-k8s.io/v1beta2"
+        "kind": "Cluster"
+        "metadata":
+          "name": "dev-cluster-01"
+          "namespace": "dev-namespace"
+        "spec":
+          "clusterNetwork":
+            "pods":
+              "cidrBlocks":
+              - "10.95.0.0/16"
+            "serviceDomain": "cluster.local"
+            "services":
+              "cidrBlocks":
+              - "10.96.0.0/12"
+          "topology":
+            "classRef":
+              "name": "builtin-generic-v3.7.0"
+              "namespace": "vmware-system-vks-public"
+            "controlPlane":
+              "metadata":
+                "annotations":
+                  "run.tanzu.vmware.com/resolve-os-image": "os-name=photon"
+              "replicas": 3
+            "variables":
+            - "name": "vmClass"
+              "value": "best-effort-medium"
+            - "name": "storageClass"
+              "value": "vsan-default-storage-policy"
+            - "name": "bootstrapAddons"
+              "value":
+                "cniRef":
+                  "name": "antrea"
+                  "namespace": "vmware-system-vks-public"
+            - "name": "kubernetes"
+              "value":
+                "certificateRotation":
+                  "enabled": true
+                  "renewalDaysBeforeExpiry": 90
+                "security":
+                  "podSecurityStandard":
+                    "audit": "restricted"
+                    "auditVersion": "latest"
+                    "deactivated": false
+                    "enforce": "privileged"
+                    "enforceVersion": "latest"
+                    "warn": "privileged"
+                    "warnVersion": "latest"
+            "version": "v1.35.6---vmware.2-vkr.3"
+            "workers":
+              "machineDeployments":
+              - "class": "node-pool"
+                "metadata":
+                  "annotations":
+                    "run.tanzu.vmware.com/resolve-os-image": "os-name=photon"
+                "name": "dev-cluster-01-np01"
+                "replicas": 3
+                "variables":
+                  "overrides":
+                  - "name": "volumes"
+                    "value":
+                    - "capacity": "30Gi"
+                      "mountPath": "/var/lib/containerd"
+                      "name": "vol-containerd"
+                      "storageClass": "vsan-default-storage-policy"
+    EOT
+  + namespace     = "dev-namespace"
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.

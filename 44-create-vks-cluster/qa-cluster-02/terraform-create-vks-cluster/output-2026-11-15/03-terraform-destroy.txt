@@ -1,0 +1,536 @@
+Destroying managed resources; Terraform waits for Cluster deletion and reports progress.
+local_file.cluster_manifest: Refreshing state... [id=fc72c15fea5d42ac017a702b7e6791373590829e]
+kubernetes_manifest.cluster: Refreshing state...
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  - destroy
+
+Terraform will perform the following actions:
+
+  # kubernetes_manifest.cluster will be destroyed
+  - resource "kubernetes_manifest" "cluster" {
+      - computed_fields = [
+          - "metadata.annotations",
+          - "metadata.labels",
+          - "spec.topology.variables",
+          - "spec.topology.version",
+        ] -> null
+      - manifest        = {
+          - apiVersion = "cluster.x-k8s.io/v1beta2"
+          - kind       = "Cluster"
+          - metadata   = {
+              - name      = "qa-cluster-02"
+              - namespace = "qa-namespace"
+            }
+          - spec       = {
+              - clusterNetwork = {
+                  - pods          = {
+                      - cidrBlocks = [
+                          - "10.95.0.0/16",
+                        ]
+                    }
+                  - serviceDomain = "cluster.local"
+                  - services      = {
+                      - cidrBlocks = [
+                          - "10.96.0.0/12",
+                        ]
+                    }
+                }
+              - topology       = {
+                  - classRef     = {
+                      - name      = "builtin-generic-v3.7.0"
+                      - namespace = "vmware-system-vks-public"
+                    }
+                  - controlPlane = {
+                      - metadata = {
+                          - annotations = {
+                              - "run.tanzu.vmware.com/resolve-os-image" = "os-name=photon"
+                            }
+                        }
+                      - replicas = 3
+                    }
+                  - variables    = [
+                      - {
+                          - name  = "vmClass"
+                          - value = "best-effort-medium"
+                        },
+                      - {
+                          - name  = "storageClass"
+                          - value = "vsan-default-storage-policy"
+                        },
+                      - {
+                          - name  = "bootstrapAddons"
+                          - value = {
+                              - cniRef = {
+                                  - name      = "antrea"
+                                  - namespace = "vmware-system-vks-public"
+                                }
+                            }
+                        },
+                      - {
+                          - name  = "kubernetes"
+                          - value = {
+                              - certificateRotation = {
+                                  - enabled                 = true
+                                  - renewalDaysBeforeExpiry = 90
+                                }
+                              - security            = {
+                                  - podSecurityStandard = {
+                                      - audit          = "restricted"
+                                      - auditVersion   = "latest"
+                                      - deactivated    = false
+                                      - enforce        = "privileged"
+                                      - enforceVersion = "latest"
+                                      - warn           = "privileged"
+                                      - warnVersion    = "latest"
+                                    }
+                                }
+                            }
+                        },
+                    ]
+                  - version      = "v1.35.6---vmware.2-vkr.3"
+                  - workers      = {
+                      - machineDeployments = [
+                          - {
+                              - class     = "node-pool"
+                              - metadata  = {
+                                  - annotations = {
+                                      - "run.tanzu.vmware.com/resolve-os-image" = "os-name=photon"
+                                    }
+                                }
+                              - name      = "qa-cluster-02-np01"
+                              - replicas  = 3
+                              - variables = {
+                                  - overrides = [
+                                      - {
+                                          - name  = "volumes"
+                                          - value = [
+                                              - {
+                                                  - capacity     = "30Gi"
+                                                  - mountPath    = "/var/lib/containerd"
+                                                  - name         = "vol-containerd"
+                                                  - storageClass = "vsan-default-storage-policy"
+                                                },
+                                            ]
+                                        },
+                                    ]
+                                }
+                            },
+                        ]
+                    }
+                }
+            }
+        } -> null
+      - object          = {
+          - apiVersion = "cluster.x-k8s.io/v1beta2"
+          - kind       = "Cluster"
+          - metadata   = {
+              - annotations                = {
+                  - "kubernetes.vmware.com/resolved-kr-data"                       = "H4sIAAAAAAAC/6yU0ZbaIBCG7/cpOHvbAxvEuJWX6SFkXDnCQIHQ2qfvUVPW3WqqqbmczPD/P/ChPebobbAKQT4RQshu6CAiZEgpgD7VDl+BmIxHSQpnomWrL8X9UBHYonYYp94gQvDJZB/3klivld36lGXbNM3LOGB8nYCs+3eFeWvUqazeJCmCtUzwb2OfoBsTUu0NakjwWEHBeMN4/al9hB7Tg0NxxgWroZYfQx0OrJggCQ7WHqs+jYobeWYMM2Cm1nRRHTxoS5dfX1/XTd+tW6HVar18j4HKgSTFGcpB9KLrVKc3i67lfX/ssaoDm+aufnRH8z6AJLo4c7PsKRxVUW8lUa5fLc/Lp+mw9dnjef0kZA0OP8/L9UI/t8+1HgdkWeGvgY2brb178YkeLf/L2sXhvIuVGUrpH2po2UUmnpzSW4PQQ7B+7wDzuKnfFdV2SBkibRYUQ8PlhwO/ROhtlM6/kH/TOn+te6i9Qu6jxD8RfJXih4WdpPky0deovp+9WzH7TPg8pauk32pjgvgp6ifIn6L/v1+Ama/A7wAAAP//M4xk84YHAAA="
+                  - "run.tanzu.vmware.com/tkr-spec"                                = "H4sIAAAAAAAC/9RWS2/cNhC+51cIuRrk8qXHCshh0aRtkLhAgjaHFkVBkaM1sxKpkFy59q8vVruWtLb8aFEUKG+a+ebjN6OZkeJNBy1EWb5KkiTZGavL5MO+Am8hQvgMDcgAg092pgcfjLNlshsRuG+vpQesXLvqqWy6K0lfueorqDjRWtlCmfQU8xRnCKFTDEP9zmM+QLZgwcsIR+jr12Nc6KSaLAGaujF2Nxr2RpdJnoo6F+saQS40EpnKUaFBo3WV55zSrGBcDWgPwe29gjGRE8vp9sEkUpYNRuVhMEXTQoiy7crkNSMsQ5Qisv6Z8ZJkJeO/Hik0NHAPbfdNc+bbeqmgA2+cDqCc1WEGamQFTTgW7HB6Oso7PmKePrTgbMk21vhJJ2bPuA/v5wUQzEeQtNbFoWrzTAYsCjchQot3HmsI0dgBhgK0PXiknA3RS2NjmfwowvvN6azy93/St5eM3P706duH5nP4ePl9EGSz+bTZrFarC/GVbd9dH5Bv3jx+oevBe6MB7Ypwd+PYA2fX3X785fK2+nJ5vXm32bxdrfi3uAbyw8E30LtrC95DDR6sglmS6GxA+tZ1h45yfmFA0jHobuK+a/Yhgv9ifNzL5lKqK2PhfSu3MIOepqg1iALXvKpkpWpWpVTrGWoYCJrVUHOSonQNgEQlFCrSQiIJkouqyIBkc2blbPSuacDP+vF4qsap3ZD0XRPfg/yXeTMQRHBeVQVkihKa3c87L+q60JQhsl4LJFghUcVzjUQu1oyxuq5U/T/MW3Fe8RTqnChJayrI/byLqtZpkaeICQ1IUKFRVfMKZSnJ+LpmOi/kv5B3baxszC34UCa//T6YWmnlFnRtoNFHa+hAHcdiqs5xbVws7P3pSzLbF4/FjQhzKJWHzgUTnb8pk8Yp2Vy5EMuUELI6BRg3RkBUupzlucAx23OjP8ptmfQcp5jTP06sHNWmCyO2k/sA/5SaY0owfTW9GA96vjr/plCKKcejUHEu9FDq3sy/Sy4MsWdb7CVdh160i9Czk1s5Fw9bv+uk2i0LkTZ6kDhKe7ufjRZmOMVsaqi4287KON4cuivwgLoeqWAeknCcY3IxVutpEtUtMAwNSp/TsZNdh6ahe0hDcEawuDhrsEe4tnsIEanjAkFyH69QAN8bBUvqBC7uWOkjhC1Eb1QYWJa1FVOGT0uTEa7lDZLLlRLP1zqA8hC3YJ+pFqOTJPGUpM5YazrQSyQimwQVQzx7EK9kY5Rb6hxOpsV0JiFEGfenTj7845nj39BhNf4VAAD//xBJ0EltCwAA"
+                  - "tkg.tanzu.vmware.com/skip-tls-verify"                         = ""
+                  - "tkg.tanzu.vmware.com/tkg-http-proxy"                          = ""
+                  - "tkg.tanzu.vmware.com/tkg-https-proxy"                         = ""
+                  - "tkg.tanzu.vmware.com/tkg-ip-family"                           = ""
+                  - "tkg.tanzu.vmware.com/tkg-no-proxy"                            = ""
+                  - "tkg.tanzu.vmware.com/tkg-proxy-ca-cert"                       = ""
+                  - "tkg.tanzu.vmware.com/tkg-registry-additional-ca-cert"         = ""
+                  - "tkg.tanzu.vmware.com/tkg-registry-additional-skip-tls-verify" = ""
+                  - "topology.internal.cluster.x-k8s.io/upgrade-step"              = ""
+                }
+              - creationTimestamp          = null
+              - deletionGracePeriodSeconds = null
+              - deletionTimestamp          = null
+              - finalizers                 = [
+                  - "cluster.cluster.x-k8s.io",
+                ]
+              - generateName               = null
+              - generation                 = null
+              - labels                     = {
+                  - "addon.addons.kubernetes.vmware.com/cluster-autoscaler" = "automatic"
+                  - "addon.addons.kubernetes.vmware.com/helm-controller"    = "automatic"
+                  - "cluster.x-k8s.io/cluster-name"                         = "qa-cluster-02"
+                  - "run.tanzu.vmware.com/tkr"                              = "v1.35.6---vmware.2-vkr.3"
+                  - "topology.cluster.x-k8s.io/owned"                       = ""
+                }
+              - managedFields              = null
+              - name                       = "qa-cluster-02"
+              - namespace                  = "qa-namespace"
+              - ownerReferences            = null
+              - resourceVersion            = null
+              - selfLink                   = null
+              - uid                        = null
+            }
+          - spec       = {
+              - availabilityGates    = null
+              - clusterNetwork       = {
+                  - apiServerPort = null
+                  - pods          = {
+                      - cidrBlocks = [
+                          - "10.95.0.0/16",
+                        ]
+                    }
+                  - serviceDomain = "cluster.local"
+                  - services      = {
+                      - cidrBlocks = [
+                          - "10.96.0.0/12",
+                        ]
+                    }
+                }
+              - controlPlaneEndpoint = {
+                  - host = "10.55.16.9"
+                  - port = 6443
+                }
+              - controlPlaneRef      = {
+                  - apiGroup = "controlplane.cluster.x-k8s.io"
+                  - kind     = "KubeadmControlPlane"
+                  - name     = "qa-cluster-02-nc864"
+                }
+              - infrastructureRef    = {
+                  - apiGroup = "vmware.infrastructure.cluster.x-k8s.io"
+                  - kind     = "VSphereCluster"
+                  - name     = "qa-cluster-02-2tm7p"
+                }
+              - paused               = null
+              - topology             = {
+                  - classRef     = {
+                      - name      = "builtin-generic-v3.7.0"
+                      - namespace = "vmware-system-vks-public"
+                    }
+                  - controlPlane = {
+                      - deletion       = {
+                          - nodeDeletionTimeoutSeconds     = null
+                          - nodeDrainTimeoutSeconds        = null
+                          - nodeVolumeDetachTimeoutSeconds = null
+                        }
+                      - healthCheck    = {
+                          - checks      = {
+                              - nodeStartupTimeoutSeconds  = null
+                              - unhealthyMachineConditions = null
+                              - unhealthyNodeConditions    = null
+                            }
+                          - enabled     = null
+                          - remediation = {
+                              - templateRef = {
+                                  - apiVersion = null
+                                  - kind       = null
+                                  - name       = null
+                                }
+                              - triggerIf   = {
+                                  - unhealthyInRange           = null
+                                  - unhealthyLessThanOrEqualTo = null
+                                }
+                            }
+                        }
+                      - metadata       = {
+                          - annotations = {
+                              - "run.tanzu.vmware.com/resolve-os-image" = "os-name=photon"
+                            }
+                          - labels      = null
+                        }
+                      - readinessGates = null
+                      - replicas       = 3
+                      - rollout        = {
+                          - after = null
+                        }
+                      - taints         = null
+                      - variables      = {
+                          - overrides = null
+                        }
+                    }
+                  - variables    = [
+                      - {
+                          - name  = "vmClass"
+                          - value = "best-effort-medium"
+                        },
+                      - {
+                          - name  = "storageClass"
+                          - value = "vsan-default-storage-policy"
+                        },
+                      - {
+                          - name  = "bootstrapAddons"
+                          - value = {
+                              - cniRef = {
+                                  - name      = "antrea"
+                                  - namespace = "vmware-system-vks-public"
+                                }
+                            }
+                        },
+                      - {
+                          - name  = "kubernetes"
+                          - value = {
+                              - certificateRotation = {
+                                  - enabled                 = true
+                                  - renewalDaysBeforeExpiry = 90
+                                }
+                              - security            = {
+                                  - podSecurityStandard = {
+                                      - audit          = "restricted"
+                                      - auditVersion   = "latest"
+                                      - deactivated    = false
+                                      - enforce        = "privileged"
+                                      - enforceVersion = "latest"
+                                      - warn           = "privileged"
+                                      - warnVersion    = "latest"
+                                    }
+                                }
+                            }
+                        },
+                    ]
+                  - version      = "v1.35.6+vmware.2"
+                  - workers      = {
+                      - machineDeployments = [
+                          - {
+                              - class           = "node-pool"
+                              - deletion        = {
+                                  - nodeDeletionTimeoutSeconds     = null
+                                  - nodeDrainTimeoutSeconds        = null
+                                  - nodeVolumeDetachTimeoutSeconds = null
+                                  - order                          = null
+                                }
+                              - failureDomain   = null
+                              - healthCheck     = {
+                                  - checks      = {
+                                      - nodeStartupTimeoutSeconds  = null
+                                      - unhealthyMachineConditions = null
+                                      - unhealthyNodeConditions    = null
+                                    }
+                                  - enabled     = null
+                                  - remediation = {
+                                      - maxInFlight = null
+                                      - templateRef = {
+                                          - apiVersion = null
+                                          - kind       = null
+                                          - name       = null
+                                        }
+                                      - triggerIf   = {
+                                          - unhealthyInRange           = null
+                                          - unhealthyLessThanOrEqualTo = null
+                                        }
+                                    }
+                                }
+                              - metadata        = {
+                                  - annotations = {
+                                      - "run.tanzu.vmware.com/resolve-os-image" = "os-name=photon"
+                                    }
+                                  - labels      = null
+                                }
+                              - minReadySeconds = null
+                              - name            = "qa-cluster-02-np01"
+                              - readinessGates  = null
+                              - replicas        = 3
+                              - rollout         = {
+                                  - after    = null
+                                  - strategy = {
+                                      - rollingUpdate = {
+                                          - maxSurge       = null
+                                          - maxUnavailable = null
+                                        }
+                                      - type          = null
+                                    }
+                                }
+                              - taints          = null
+                              - variables       = {
+                                  - overrides = [
+                                      - {
+                                          - name  = "volumes"
+                                          - value = [
+                                              - {
+                                                  - capacity     = "30Gi"
+                                                  - mountPath    = "/var/lib/containerd"
+                                                  - name         = "vol-containerd"
+                                                  - storageClass = "vsan-default-storage-policy"
+                                                },
+                                            ]
+                                        },
+                                    ]
+                                }
+                            },
+                        ]
+                      - machinePools       = null
+                    }
+                }
+            }
+        } -> null
+
+      - field_manager {
+          - force_conflicts = false -> null
+          - name            = "terraform-vks-cluster" -> null
+        }
+
+      - timeouts {
+          - create = "60m" -> null
+          - delete = "60m" -> null
+          - update = "60m" -> null
+        }
+
+      - wait {
+          - condition {
+              - status = "True" -> null
+              - type   = "Available" -> null
+            }
+        }
+    }
+
+  # local_file.cluster_manifest will be destroyed
+  - resource "local_file" "cluster_manifest" {
+      - content              = <<-EOT
+            "apiVersion": "cluster.x-k8s.io/v1beta2"
+            "kind": "Cluster"
+            "metadata":
+              "name": "qa-cluster-02"
+              "namespace": "qa-namespace"
+            "spec":
+              "clusterNetwork":
+                "pods":
+                  "cidrBlocks":
+                  - "10.95.0.0/16"
+                "serviceDomain": "cluster.local"
+                "services":
+                  "cidrBlocks":
+                  - "10.96.0.0/12"
+              "topology":
+                "classRef":
+                  "name": "builtin-generic-v3.7.0"
+                  "namespace": "vmware-system-vks-public"
+                "controlPlane":
+                  "metadata":
+                    "annotations":
+                      "run.tanzu.vmware.com/resolve-os-image": "os-name=photon"
+                  "replicas": 3
+                "variables":
+                - "name": "vmClass"
+                  "value": "best-effort-medium"
+                - "name": "storageClass"
+                  "value": "vsan-default-storage-policy"
+                - "name": "bootstrapAddons"
+                  "value":
+                    "cniRef":
+                      "name": "antrea"
+                      "namespace": "vmware-system-vks-public"
+                - "name": "kubernetes"
+                  "value":
+                    "certificateRotation":
+                      "enabled": true
+                      "renewalDaysBeforeExpiry": 90
+                    "security":
+                      "podSecurityStandard":
+                        "audit": "restricted"
+                        "auditVersion": "latest"
+                        "deactivated": false
+                        "enforce": "privileged"
+                        "enforceVersion": "latest"
+                        "warn": "privileged"
+                        "warnVersion": "latest"
+                "version": "v1.35.6---vmware.2-vkr.3"
+                "workers":
+                  "machineDeployments":
+                  - "class": "node-pool"
+                    "metadata":
+                      "annotations":
+                        "run.tanzu.vmware.com/resolve-os-image": "os-name=photon"
+                    "name": "qa-cluster-02-np01"
+                    "replicas": 3
+                    "variables":
+                      "overrides":
+                      - "name": "volumes"
+                        "value":
+                        - "capacity": "30Gi"
+                          "mountPath": "/var/lib/containerd"
+                          "name": "vol-containerd"
+                          "storageClass": "vsan-default-storage-policy"
+        EOT -> null
+      - content_base64sha256 = "HvdqNRqDLw087QCaoGutbiKtFpy+uCpHcmnjlx2cNwM=" -> null
+      - content_base64sha512 = "I2lM6xcQzMLlfG3Row5eRbEf1ONx7ItyEpkyq1dKbEMXwQ0zOskkuvwoZwyVioMJytRftbV/H32XkXMW7J4oRg==" -> null
+      - content_md5          = "3c5e12196fdcdd61906dc310498bc3f4" -> null
+      - content_sha1         = "fc72c15fea5d42ac017a702b7e6791373590829e" -> null
+      - content_sha256       = "1ef76a351a832f0d3ced009aa06bad6e22ad169cbeb82a477269e3971d9c3703" -> null
+      - content_sha512       = "23694ceb1710ccc2e57c6dd1a30e5e45b11fd4e371ec8b72129932ab574a6c4317c10d333ac924bafc28670c958a8309cad45fb5b57f1f7d97917316ec9e2846" -> null
+      - directory_permission = "0700" -> null
+      - file_permission      = "0600" -> null
+      - filename             = "./deployment-files/create-qa-cluster-02.yaml" -> null
+      - id                   = "fc72c15fea5d42ac017a702b7e6791373590829e" -> null
+    }
+
+Plan: 0 to add, 0 to change, 2 to destroy.
+
+Changes to Outputs:
+  - cluster_name  = "qa-cluster-02" -> null
+  - manifest_file = "./deployment-files/create-qa-cluster-02.yaml" -> null
+  - manifest_yaml = <<-EOT
+        "apiVersion": "cluster.x-k8s.io/v1beta2"
+        "kind": "Cluster"
+        "metadata":
+          "name": "qa-cluster-02"
+          "namespace": "qa-namespace"
+        "spec":
+          "clusterNetwork":
+            "pods":
+              "cidrBlocks":
+              - "10.95.0.0/16"
+            "serviceDomain": "cluster.local"
+            "services":
+              "cidrBlocks":
+              - "10.96.0.0/12"
+          "topology":
+            "classRef":
+              "name": "builtin-generic-v3.7.0"
+              "namespace": "vmware-system-vks-public"
+            "controlPlane":
+              "metadata":
+                "annotations":
+                  "run.tanzu.vmware.com/resolve-os-image": "os-name=photon"
+              "replicas": 3
+            "variables":
+            - "name": "vmClass"
+              "value": "best-effort-medium"
+            - "name": "storageClass"
+              "value": "vsan-default-storage-policy"
+            - "name": "bootstrapAddons"
+              "value":
+                "cniRef":
+                  "name": "antrea"
+                  "namespace": "vmware-system-vks-public"
+            - "name": "kubernetes"
+              "value":
+                "certificateRotation":
+                  "enabled": true
+                  "renewalDaysBeforeExpiry": 90
+                "security":
+                  "podSecurityStandard":
+                    "audit": "restricted"
+                    "auditVersion": "latest"
+                    "deactivated": false
+                    "enforce": "privileged"
+                    "enforceVersion": "latest"
+                    "warn": "privileged"
+                    "warnVersion": "latest"
+            "version": "v1.35.6---vmware.2-vkr.3"
+            "workers":
+              "machineDeployments":
+              - "class": "node-pool"
+                "metadata":
+                  "annotations":
+                    "run.tanzu.vmware.com/resolve-os-image": "os-name=photon"
+                "name": "qa-cluster-02-np01"
+                "replicas": 3
+                "variables":
+                  "overrides":
+                  - "name": "volumes"
+                    "value":
+                    - "capacity": "30Gi"
+                      "mountPath": "/var/lib/containerd"
+                      "name": "vol-containerd"
+                      "storageClass": "vsan-default-storage-policy"
+    EOT -> null
+  - namespace     = "qa-namespace" -> null
+local_file.cluster_manifest: Destroying... [id=fc72c15fea5d42ac017a702b7e6791373590829e]
+local_file.cluster_manifest: Destruction complete after 0s
+kubernetes_manifest.cluster: Destroying...
+kubernetes_manifest.cluster: Still destroying... [00m10s elapsed]
+kubernetes_manifest.cluster: Still destroying... [00m20s elapsed]
+kubernetes_manifest.cluster: Destruction complete after 26s
+
+Destroy complete! Resources: 2 destroyed.
+Terraform destroy completed; all resources selected for destruction have been removed.
